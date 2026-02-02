@@ -1,0 +1,5 @@
+{
+  "name": "StudyBuddy",
+  "description": "A hip, process-oriented study tracker that visualizes effort as receipts. Not a timer, but a flow recorder.",
+  "requestFramePermissions": []
+}
