@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export const FeatureRecord: React.FC = () => {
   const [isClean, setIsClean] = useState(false);
 
-  // Toggle animation automatically every few seconds
   React.useEffect(() => {
     const interval = setInterval(() => {
       setIsClean(prev => !prev);
@@ -23,8 +22,6 @@ export const FeatureRecord: React.FC = () => {
   return (
     <section className="py-24 bg-gray-50 overflow-hidden" id="features">
       <div className="container mx-auto px-4 flex flex-col md:flex-row items-center gap-16">
-        
-        {/* Left: Text */}
         <div className="w-full md:w-1/2">
           <div className="inline-flex items-center gap-2 text-brand-lime bg-brand-black px-3 py-1 rounded-full text-xs font-bold mb-6">
             <Sparkles size={14} />
@@ -47,21 +44,19 @@ export const FeatureRecord: React.FC = () => {
           </div>
         </div>
 
-        {/* Right: Interactive UI */}
         <div className="w-full md:w-1/2 h-[500px] relative bg-white rounded-3xl shadow-xl border border-gray-100 p-8 flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-50"></div>
           
-          <AnimatePresence mode='wait'>
-            <div className="relative w-full max-w-xs h-80">
+          <div className="relative w-full max-w-xs h-80">
+            <AnimatePresence>
               {items.map((item, index) => (
                 <motion.div
                   key={item.id}
                   layout
-                  initial={false}
                   animate={isClean ? {
                     rotate: 0,
                     x: 0,
-                    y: index * 70 - 100, // Stack vertically
+                    y: index * 70 - 100,
                     scale: 1,
                   } : {
                     rotate: item.messyPos.rotate,
@@ -69,8 +64,9 @@ export const FeatureRecord: React.FC = () => {
                     y: item.messyPos.y,
                     scale: 1.05,
                   }}
+                  style={{ zIndex: 10 - index }}
                   transition={{ type: "spring", stiffness: 120, damping: 20 }}
-                  className={`absolute left-0 right-0 mx-auto w-64 h-16 rounded-xl shadow-md border-2 border-brand-black flex items-center px-4 gap-3 ${isClean ? 'bg-white' : item.color} z-${10-index}`}
+                  className={`absolute left-0 right-0 mx-auto w-64 h-16 rounded-xl shadow-md border-2 border-brand-black flex items-center px-4 gap-3 ${isClean ? 'bg-white' : item.color}`}
                 >
                   <div className={`w-3 h-3 rounded-full border border-black ${isClean ? 'bg-brand-lime' : 'bg-transparent'}`}></div>
                   <span className={`font-mono text-sm font-bold ${isClean ? 'text-black' : 'text-gray-700'}`}>
@@ -79,16 +75,14 @@ export const FeatureRecord: React.FC = () => {
                   {isClean && <div className="ml-auto text-xs text-gray-400 font-mono">{(15 + index * 10)}m</div>}
                 </motion.div>
               ))}
+            </AnimatePresence>
 
-              {/* Connecting Line for Clean State */}
-              <motion.div 
-                className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 -z-10"
-                animate={{ opacity: isClean ? 1 : 0 }}
-              ></motion.div>
-            </div>
-          </AnimatePresence>
+            <motion.div 
+              className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 -z-10"
+              animate={{ opacity: isClean ? 1 : 0 }}
+            ></motion.div>
+          </div>
 
-          {/* AI Processing Badge */}
           <motion.div 
             className="absolute bottom-6 bg-brand-black text-white px-4 py-2 rounded-full flex items-center gap-2 shadow-lg"
             animate={{ scale: isClean ? [1, 1.1, 1] : 1 }}

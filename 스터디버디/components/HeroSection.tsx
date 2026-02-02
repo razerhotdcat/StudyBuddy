@@ -7,12 +7,9 @@ import { ArrowRight } from 'lucide-react';
 export const HeroSection: React.FC = () => {
   return (
     <section className="relative min-h-screen pt-32 pb-20 px-4 flex items-center overflow-hidden bg-white">
-      {/* Background Decorative Blobs */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-lime/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 -z-10"></div>
       
       <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-12 relative z-10">
-        
-        {/* Text Content */}
         <motion.div 
           className="w-full md:w-1/2 space-y-8"
           initial={{ opacity: 0, x: -50 }}
@@ -50,14 +47,15 @@ export const HeroSection: React.FC = () => {
           <div className="flex items-center gap-4 text-sm text-gray-500 pt-4">
             <div className="flex -space-x-2">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className={`w-8 h-8 rounded-full border-2 border-white bg-gray-${i*100+200} bg-[url('https://picsum.photos/32/32?random=${i}')] bg-cover`}></div>
+                <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-gray-200 bg-cover overflow-hidden">
+                  <img src={`https://picsum.photos/32/32?random=${i}`} alt="user" className="w-full h-full object-cover" />
+                </div>
               ))}
             </div>
             <p>이미 12,000+ 명의 학생들이 성과를 기록 중입니다.</p>
           </div>
         </motion.div>
 
-        {/* Visual Content (Receipt Animation) */}
         <div className="w-full md:w-1/2 flex justify-center md:justify-end relative">
           <motion.div
              initial={{ rotate: 5, y: 100, opacity: 0 }}
@@ -71,7 +69,6 @@ export const HeroSection: React.FC = () => {
           >
             <Receipt />
             
-            {/* Floating Elements around receipt */}
             <motion.div 
               className="absolute -right-8 top-1/4 bg-brand-black text-white p-4 rounded-xl shadow-xl z-30 max-w-[150px]"
               initial={{ scale: 0, opacity: 0 }}
@@ -93,12 +90,10 @@ export const HeroSection: React.FC = () => {
                 <p className="font-bold text-sm font-mono">REC</p>
               </div>
             </motion.div>
-
           </motion.div>
 
-          {/* Decorative Circle */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-gray-200 rounded-full -z-10 animate-[spin_60s_linear_infinite]"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] border border-dashed border-gray-300 rounded-full -z-10 animate-[spin_40s_linear_infinite_reverse]"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-gray-200 rounded-full -z-10 animate-spin-slow"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] border border-dashed border-gray-300 rounded-full -z-10 animate-spin-slow-reverse"></div>
         </div>
       </div>
     </section>

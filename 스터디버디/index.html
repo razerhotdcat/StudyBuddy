@@ -18,10 +18,14 @@
             },
             colors: {
               brand: {
-                lime: '#ccff00', // Hip neon lime
+                lime: '#ccff00',
                 black: '#111111',
                 gray: '#f4f4f5',
               }
+            },
+            animation: {
+              'spin-slow': 'spin 60s linear infinite',
+              'spin-slow-reverse': 'spin 40s linear infinite reverse',
             }
           }
         }
@@ -34,7 +38,6 @@
         color: #111111;
         overflow-x: hidden;
       }
-      /* Custom Scrollbar for a cleaner look */
       ::-webkit-scrollbar {
         width: 8px;
       }
@@ -45,25 +48,23 @@
         background: #cbd5e1;
         border-radius: 4px;
       }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-      }
     </style>
-  <script type="importmap">
+    <script type="importmap">
 {
   "imports": {
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "lucide-react": "https://esm.sh/lucide-react@0.468.0?external=react",
+    "framer-motion": "https://esm.sh/framer-motion@11.15.0?external=react",
     "react/": "https://esm.sh/react@^19.2.4/",
-    "react": "https://esm.sh/react@^19.2.4",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "framer-motion": "https://esm.sh/framer-motion@^12.30.0"
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
-</head>
+  </head>
   <body>
     <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
-</body>
+    <script type="module" src="index.tsx"></script>
+  </body>
 </html>

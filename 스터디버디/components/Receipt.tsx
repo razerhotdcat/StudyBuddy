@@ -26,10 +26,8 @@ export const Receipt: React.FC<ReceiptProps> = ({
       viewport={{ once: true }}
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
-      {/* Receipt Top Edge (Paper roll effect) */}
       <div className="absolute -top-2 left-0 w-full h-4 bg-gray-100 rounded-t-lg -z-10"></div>
 
-      {/* Content */}
       <div className="p-6 pb-12 relative z-10 bg-white">
         <div className="flex flex-col items-center mb-6 space-y-2">
           <div className="w-12 h-12 bg-brand-black rounded-full flex items-center justify-center text-brand-lime font-bold text-xl mb-2">
@@ -64,24 +62,19 @@ export const Receipt: React.FC<ReceiptProps> = ({
 
         <div className="flex flex-col items-center space-y-2 opacity-60">
           <p className="text-[10px] text-center uppercase">Thank you for your effort</p>
-          {/* Mock Barcode */}
           <div className="h-10 w-full bg-[url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/UPC-A-036000291452.svg/1200px-UPC-A-036000291452.svg.png')] bg-cover bg-center grayscale opacity-80 mix-blend-multiply"></div>
           <p className="text-[10px] tracking-[0.3em]">0012-9938-1212</p>
         </div>
       </div>
 
-      {/* Jagged Bottom Edge */}
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none rotate-180 translate-y-[99%]">
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none rotate-180 translate-y-[98%]">
         <svg
-          className="relative block w-[calc(100%+1.3px)] h-[12px] text-white fill-current"
-          data-name="Layer 1"
+          className="relative block w-full h-[12px] text-white fill-current"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 1200 120"
           preserveAspectRatio="none"
         >
-          <path d="M0,0V46.29c47,24.22,103.79,16.59,150,0a169.59,169.59,0,0,1,88.75-5.61c40.35,5.13,76.5,23.11,111.25,41.48,51.89,27.35,110.22,34.82,165.25,7.77,53.28-26.12,102.3-33.88,154.5-5.18,48.24,26.54,101.44,30.34,150,5.18V0Z"></path>
-          {/* Simple jagged workaround using repeat css would be lighter, but SVG is smoother */}
-          <path d="M1200,0H0V120L30,60L60,120L90,60L120,120L150,60L180,120L210,60L240,120L270,60L300,120L330,60L360,120L390,60L420,120L450,60L480,120L510,60L540,120L570,60L600,120L630,60L660,120L690,60L720,120L750,60L780,120L810,60L840,120L870,60L900,120L930,60L960,120L990,60L1020,120L1050,60L1080,120L1110,60L1140,120L1170,60L1200,120V0Z"></path>
+          <path d="M0,120 L40,0 L80,120 L120,0 L160,120 L200,0 L240,120 L280,0 L320,120 L360,0 L400,120 L440,0 L480,120 L520,0 L560,120 L600,0 L640,120 L680,0 L720,120 L760,0 L800,120 L840,0 L880,120 L920,0 L960,120 L1000,0 L1040,120 L1080,0 L1120,120 L1160,0 L1200,120 V120 H0 Z"></path>
         </svg>
       </div>
     </motion.div>
