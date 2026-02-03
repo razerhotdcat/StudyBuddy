@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-lime: #ccff00;
+  --color-brand-black: #111111;
+}
+
+body {
+  background-color: #111111;
+  color: white;
+  margin: 0;
+}

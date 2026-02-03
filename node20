@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+NODE_DIR="${ROOT_DIR}/.node"
+
+if [[ ! -x "${NODE_DIR}/bin/node" ]]; then
+  echo "Node 20.19.1 not found at ${NODE_DIR}. Run the setup step first."
+  exit 1
+fi
+
+export PATH="${NODE_DIR}/bin:${PATH}"
+exec "$@"
