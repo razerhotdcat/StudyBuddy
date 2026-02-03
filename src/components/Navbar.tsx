@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import type { User } from 'firebase/auth';
 import { Menu, X } from 'lucide-react';
 import { Button } from './ui/Button';
 
-export const Navbar: React.FC = () => {
+interface NavbarProps {
+  user: User | null;
+  onLoginClick: () => void;
+  onLogoutClick: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({
+  user,
+  onLoginClick,
+  onLogoutClick,
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -30,8 +41,29 @@ export const Navbar: React.FC = () => {
           <a href="#features" className="text-sm font-medium hover:text-gray-600 transition-colors">기능 소개</a>
           <a href="#philosophy" className="text-sm font-medium hover:text-gray-600 transition-colors">철학</a>
           <div className="flex items-center gap-3">
-            <button className="text-sm font-bold hover:underline px-3 py-2">로그인</button>
-            <Button size="sm">무료로 시작하기</Button>
+            {user ? (
+              <>
+                <button
+                  className="text-sm font-bold hover:underline px-3 py-2"
+                  onClick={onLogoutClick}
+                >
+                  로그아웃
+                </button>
+                <span className="text-sm font-medium">
+                  {user.displayName || '프로필'}
+                </span>
+              </>
+            ) : (
+              <>
+                <button
+                  className="text-sm font-bold hover:underline px-3 py-2"
+                  onClick={onLoginClick}
+                >
+                  로그인
+                </button>
+                <Button size="sm">무료로 시작하기</Button>
+              </>
+            )}
           </div>
         </div>
 
@@ -47,8 +79,22 @@ export const Navbar: React.FC = () => {
           <a href="#features" className="block py-2 font-medium" onClick={() => setIsMenuOpen(false)}>기능 소개</a>
           <a href="#philosophy" className="block py-2 font-medium" onClick={() => setIsMenuOpen(false)}>철학</a>
           <div className="h-[1px] bg-gray-100 w-full"></div>
-          <button className="w-full text-left font-bold py-2">로그인</button>
-          <Button className="w-full">무료로 시작하기</Button>
+          <button
+            className="w-full text-left font-bold py-2"
+            onClick={() => {
+              if (user) {
+                onLogoutClick();
+              } else {
+                onLoginClick();
+              }
+              setIsMenuOpen(false);
+            }}
+          >
+            {user ? '로그아웃' : '로그인'}
+          </button>
+          <Button className="w-full" onClick={() => setIsMenuOpen(false)}>
+            무료로 시작하기
+          </Button>
         </div>
       )}
     </nav>
