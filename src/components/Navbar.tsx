@@ -16,6 +16,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,17 +43,55 @@ export const Navbar: React.FC<NavbarProps> = ({
           <a href="#philosophy" className="text-sm font-medium hover:text-gray-600 transition-colors">철학</a>
           <div className="flex items-center gap-3">
             {user ? (
-              <>
+              <div
+                className="relative"
+                onMouseEnter={() => setIsProfileMenuOpen(true)}
+                onMouseLeave={() => setIsProfileMenuOpen(false)}
+              >
                 <button
-                  className="text-sm font-bold hover:underline px-3 py-2"
-                  onClick={onLogoutClick}
+                  type="button"
+                  className="w-8 h-8 rounded-full overflow-hidden border border-brand-lime flex items-center justify-center bg-[#222222] text-white text-sm font-bold"
+                  onClick={() => setIsProfileMenuOpen((prev) => !prev)}
                 >
-                  로그아웃
+                  {user.photoURL ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={user.photoURL}
+                      alt={user.displayName || user.email || 'User'}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span>
+                      {(user.displayName || user.email || 'U').charAt(0).toUpperCase()}
+                    </span>
+                  )}
                 </button>
-                <span className="text-sm font-medium">
-                  {user.displayName || '프로필'}
-                </span>
-              </>
+
+                {isProfileMenuOpen && (
+                  <div className="absolute right-0 mt-3 w-44 rounded-xl bg-[#222222] text-white shadow-xl border border-[#333333] py-2">
+                    <button
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-[#333333] hover:text-[#ccff00] transition-colors"
+                      // TODO: 실제 "내 기록 보기" 페이지/섹션과 연결
+                      onClick={() => {
+                        console.log('내 기록 보기 clicked');
+                        setIsProfileMenuOpen(false);
+                      }}
+                    >
+                      내 기록 보기
+                    </button>
+                    <div className="h-px bg-[#333333] my-1" />
+                    <button
+                      className="w-full text-left px-4 py-2 text-sm text-red-300 hover:bg-[#333333] hover:text-red-400 transition-colors"
+                      onClick={() => {
+                        onLogoutClick();
+                        setIsProfileMenuOpen(false);
+                      }}
+                    >
+                      로그아웃
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <>
                 <button

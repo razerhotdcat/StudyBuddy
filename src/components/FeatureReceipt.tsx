@@ -1,10 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Receipt } from './Receipt';
 import { Button } from './ui/Button';
 import { Printer, Share2 } from 'lucide-react';
+import type { StudyItem } from '../types';
 
-export const FeatureReceipt: React.FC = () => {
+interface FeatureReceiptProps {
+  items: StudyItem[];
+  onAddItem: (item: StudyItem) => void;
+}
+
+export const FeatureReceipt: React.FC<FeatureReceiptProps> = ({ items, onAddItem }) => {
+  const [subjectInput, setSubjectInput] = useState('');
+  const [durationInput, setDurationInput] = useState('');
+
+  const handleAddClick = () => {
+    const subject = subjectInput.trim();
+    const minutes = Number(durationInput);
+
+    if (!subject) {
+      window.alert('과목명을 입력해주세요.');
+      return;
+    }
+
+    if (!Number.isFinite(minutes) || minutes <= 0) {
+      window.alert('공부 시간(분)을 올바르게 입력해주세요.');
+      return;
+    }
+
+    onAddItem({ subject, duration: minutes });
+    setSubjectInput('');
+    setDurationInput('');
+  };
+
+  const today = new Date();
+  const formattedDate = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+
   return (
     <section className="py-24 bg-brand-black text-white relative overflow-hidden">
       {/* Background Grid */}
@@ -49,6 +80,37 @@ export const FeatureReceipt: React.FC = () => {
                     <span className="animate-pulse">_</span>
                   </div>
                 </div>
+
+                {/* Input Form */}
+                <div className="space-y-3 mb-6">
+                  <div className="flex flex-col gap-2">
+                    <input
+                      type="text"
+                      value={subjectInput}
+                      onChange={(e) => setSubjectInput(e.target.value)}
+                      placeholder="과목명 / 작업 내용을 입력하세요"
+                      className="w-full rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-lime/70"
+                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="number"
+                        min={1}
+                        value={durationInput}
+                        onChange={(e) => setDurationInput(e.target.value)}
+                        placeholder="시간(분)"
+                        className="w-28 rounded-lg bg-gray-800 border border-gray-700 px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-lime/70"
+                      />
+                      <Button
+                        type="button"
+                        className="flex-1 bg-brand-lime text-black hover:bg-white transition-colors h-10 text-sm font-bold"
+                        onClick={handleAddClick}
+                      >
+                        추가
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
                 <Button className="w-full bg-brand-lime text-black hover:bg-white transition-colors h-14 text-lg">
                   <Printer className="mr-2" /> 영수증 출력하기
                 </Button>
@@ -74,21 +136,10 @@ export const FeatureReceipt: React.FC = () => {
                className="relative"
              >
                 <Receipt 
-                  items={[
-                    { task: "UX 리서치 분석", time: "2h 10m" },
-                    { task: "프로토타입 스케치", time: "1h 45m" },
-                    { task: "팀 미팅", time: "50m" },
-                    { task: "개발 문서 정리", time: "40m" }
-                  ]}
-                  totalTime="5h 25m"
-                  date="2024.10.24"
+                  items={items}
+                  date={formattedDate}
                 />
              </motion.div>
-
-             {/* Tear line decoration */}
-             <div className="absolute -top-10 left-1/2 -translate-x-1/2 text-gray-600 font-mono text-xs tracking-[0.5em] opacity-50 rotate-90 origin-left">
-                CUT_HERE
-             </div>
           </div>
 
         </div>

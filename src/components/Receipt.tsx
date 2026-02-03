@@ -1,23 +1,41 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import type { StudyItem } from '../types';
 
 interface ReceiptProps {
-  items?: { task: string; time: string }[];
-  totalTime?: string;
+  items?: StudyItem[];
   className?: string;
   date?: string;
 }
 
+const defaultItems: StudyItem[] = [
+  { subject: 'React Hook 학습', duration: 45 },
+  { subject: 'UI 컴포넌트 설계', duration: 80 },
+  { subject: 'Typescript 에러 수정', duration: 30 },
+];
+
+const formatDuration = (minutes: number) => {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+
+  if (hours === 0) {
+    return `${mins}m`;
+  }
+  if (mins === 0) {
+    return `${hours}h`;
+  }
+  return `${hours}h ${mins}m`;
+};
+
 export const Receipt: React.FC<ReceiptProps> = ({ 
-  items = [
-    { task: "React Hook 학습", time: "45m" },
-    { task: "UI 컴포넌트 설계", time: "1h 20m" },
-    { task: "Typescript 에러 수정", time: "30m" },
-  ],
-  totalTime = "2h 35m",
-  date = "2024.05.21",
-  className = ""
+  items,
+  date = '2024.05.21',
+  className = '',
 }) => {
+  const effectiveItems = (items && items.length > 0 ? items : defaultItems);
+  const totalMinutes = effectiveItems.reduce((sum, item) => sum + item.duration, 0);
+  const totalTime = formatDuration(totalMinutes);
+
   return (
     <motion.div 
       className={`relative bg-white text-brand-black font-mono shadow-2xl w-full max-w-sm mx-auto ${className}`}
@@ -47,10 +65,10 @@ export const Receipt: React.FC<ReceiptProps> = ({
             <span>Item / Process</span>
             <span>Duration</span>
           </div>
-          {items.map((item, idx) => (
+          {effectiveItems.map((item, idx) => (
             <div key={idx} className="flex justify-between text-sm items-start">
-              <span className="font-medium max-w-[70%] break-words leading-tight">{item.task}</span>
-              <span className="font-bold">{item.time}</span>
+              <span className="font-medium max-w-[70%] break-words leading-tight">{item.subject}</span>
+              <span className="font-bold">{formatDuration(item.duration)}</span>
             </div>
           ))}
         </div>

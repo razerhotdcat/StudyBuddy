@@ -10,9 +10,11 @@ import {
   signInWithGoogle,
   signOutUser,
 } from './firebase';
+import type { StudyItem } from './types';
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [items, setItems] = useState<StudyItem[]>([]);
 
   const handleLogin = async () => {
     console.log('Login button clicked');
@@ -74,7 +76,10 @@ function App() {
       <main>
         <HeroSection />
         <FeatureRecord />
-        <FeatureReceipt />
+        <FeatureReceipt
+          items={items}
+          onAddItem={(item) => setItems((prev) => [...prev, item])}
+        />
         
         {/* Call to Action Banner */}
         <section className="py-20 px-4 bg-gray-50 border-t border-gray-200">
