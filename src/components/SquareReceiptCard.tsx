@@ -80,7 +80,7 @@ export const SquareReceiptCard: React.FC<SquareReceiptCardProps> = ({ item, onRe
       </div>
 
       <div className="mt-auto">
-        <ZigzagEdge fill="#FFFFFF" height={12} />
+        <ZigzagEdge fill="#FCFCFC" height={12} />
       </div>
 
       <AnimatePresence>

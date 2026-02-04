@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { User } from 'firebase/auth';
 import { Menu, X, Wrench, Archive, Calendar, Grid, User as UserIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Button } from './ui/Button';
+import { useTheme } from '../context/ThemeContext';
 import type { UserProfileDoc } from '../firebase';
 import type { TabId } from './TabNavigation';
 
@@ -46,6 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   activeTab = 'workshop',
   onTabChange,
 }) => {
+  const theme = useTheme();
   const displayName = profile?.nickname || user?.displayName || user?.email || 'U';
   const photoURL = profile?.photoURL || user?.photoURL;
   const [isScrolled, setIsScrolled] = useState(false);
@@ -62,12 +63,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   // 로그인 후에는 다크 모드 간소화 버전
   const isLoggedIn = !!user;
-  const navClasses = isLoggedIn
-    ? 'fixed top-0 left-0 w-full z-50 bg-[#0a0a0a] border-b border-gray-800 py-3'
-    : 'fixed top-0 left-0 w-full z-50 bg-[#0a0a0a]/95 backdrop-blur-sm border-b border-gray-800 py-4';
+  const navBg = theme.bg;
+  const navBorder = theme.mode === 'dark' ? 'border-gray-800' : 'border-gray-300';
+  const navClasses = `fixed top-0 left-0 w-full z-50 border-b py-3 transition-colors ${navBorder}`;
+  const navStyle = { background: navBg };
 
   return (
-    <nav className={navClasses}>
+    <nav className={navClasses} style={navStyle}>
       <div className="container mx-auto px-4 md:px-8 flex justify-between items-center">
         {/* Logo + 탭 네비: 로그인 시 로고 옆에 탭 가로 배치 */}
         <div className="flex items-center gap-1 md:gap-4 overflow-x-auto min-w-0">
@@ -109,12 +111,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                 return (
                   <button
                     key={tab.id}
+                    id={tab.id === 'collection' ? 'tab-collection' : undefined}
                     type="button"
                     role="tab"
                     aria-selected={isActive}
                     onClick={() => onTabChange(tab.id)}
-                    className={`relative flex items-center gap-2 px-3 py-2 md:px-5 md:py-2.5 font-mono font-bold tracking-wider transition-colors whitespace-nowrap rounded-lg ${
-                      isActive ? '' : 'text-gray-400 hover:text-white'
+                    className={`relative flex items-center gap-2 px-3 py-2 md:px-5 md:py-2.5 font-mono font-bold tracking-wider transition-colors whitespace-nowrap rounded-lg min-h-[48px] md:min-h-0 ${
+                      isActive ? '' : theme.mode === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'
                     }`}
                     style={{
                       fontSize: '1.2rem',
@@ -161,8 +164,25 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         )}
 
-        {/* 로그인 후 프로필: 아바타 클릭/호버 시 드롭다운, 브릿지로 간격 채워 메뉴 유지 */}
+        {/* 로그인 후: 테마 토글 + 프로필 */}
         {isLoggedIn && (
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              role="switch"
+              aria-checked={theme.mode === 'light'}
+              onClick={theme.toggle}
+              className="relative w-12 h-6 rounded-full border-2 border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#ccff00] min-h-[48px] md:min-h-0 flex items-center"
+              style={{ background: theme.mode === 'dark' ? '#1f2937' : '#9ca3af' }}
+            >
+              <span
+                className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform duration-200"
+                style={{ transform: theme.mode === 'dark' ? 'translateX(0)' : 'translateX(24px)' }}
+              />
+            </button>
+            <span className="font-mono text-xs font-bold uppercase hidden sm:inline" style={{ color: theme.text }}>
+              {theme.mode === 'dark' ? 'Dark' : 'Light'}
+            </span>
           <div
             className="relative"
             onMouseEnter={() => setIsProfileMenuOpen(true)}
@@ -232,6 +252,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             )}
           </div>
+          </div>
         )}
 
         {/* Mobile Toggle (로그인 전에만 표시) */}
@@ -244,7 +265,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Menu (로그인 전에만 표시) */}
         {!isLoggedIn && isMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-[#0a0a0a] border-b border-gray-800 p-4 flex flex-col gap-4 md:hidden shadow-lg shadow-black/40">
+        <div className="absolute top-full left-0 w-full border-b border-gray-800 p-4 flex flex-col gap-4 md:hidden shadow-lg shadow-black/40" style={{ background: theme.bg }}>
           <a href="#features" className="block py-2 font-medium text-gray-200 hover:text-white" onClick={() => setIsMenuOpen(false)}>기능 소개</a>
           <a href="#philosophy" className="block py-2 font-medium text-gray-200 hover:text-white" onClick={() => setIsMenuOpen(false)}>철학</a>
           <div className="h-[1px] bg-gray-800 w-full"></div>

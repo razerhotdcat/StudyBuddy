@@ -5,6 +5,7 @@ import type { StudySessionDoc } from '../firebase';
 import { deleteStudySession } from '../firebase';
 import { getRandomManagerComment } from '../lib/managerComments';
 import { ZigzagEdge } from './ZigzagEdge';
+import { ReceiptTopStrip } from './ReceiptTopStrip';
 
 const formatDuration = (minutes: number) => {
   const h = Math.floor(minutes / 60);
@@ -85,22 +86,19 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
           <div className="relative w-[min(320px,90vw)] max-h-[75vh]">
             {/* 실제 영수증 본문 */}
             <div
-              className={`w-full overflow-y-auto overflow-x-visible rounded-t-lg border-2 border-brand-lime border-b-0 pb-6 transition-opacity duration-150 ${isShredding ? 'opacity-0' : 'opacity-100'}`}
+              className={`w-full overflow-y-auto overflow-x-visible rounded-t-lg border border-gray-200 border-b-0 pb-6 transition-opacity duration-150 ${isShredding ? 'opacity-0' : 'opacity-100'}`}
               style={{
-                background: '#FFFFFF',
+                background: '#FCFCFC',
                 boxShadow:
                   '0 25px 50px -12px rgba(0,0,0,0.45), 0 12px 24px -8px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.05), 0 0 40px rgba(204,255,0,0.08)',
               }}
             >
-              <div className="p-5 pb-4 font-mono" style={{ color: '#000000' }}>
-              {/* 헤더 */}
-              <div className="flex flex-col items-center border-b-2 border-dashed border-gray-300 pb-4 mb-4">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm mb-2" style={{ background: '#000000', color: '#ccff00' }}>
-                  SB
-                </div>
-                <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: '#000000' }}>Flow Receipt</p>
-                <p className="text-xs font-medium mt-1" style={{ color: '#000000' }}>{formatDate(session.createdAt)}</p>
+              <ReceiptTopStrip />
+              <div className="p-5 pb-4 font-mono border-b-2 border-dashed border-gray-200 pb-4 mb-4" style={{ color: '#000000' }}>
+                <p className="text-center text-[10px] font-bold uppercase tracking-widest">Flow Receipt</p>
+                <p className="text-center text-xs font-medium mt-1">{formatDate(session.createdAt)}</p>
               </div>
+              <div className="px-5" style={{ color: '#000000' }}>
 
               {/* 활동명 / 시간 */}
               <div className="flex justify-between items-start gap-4 mb-4">
@@ -191,8 +189,9 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
                 </button>
               </div>
               </div>
+              </div>
               <div className="overflow-visible pb-2">
-                <ZigzagEdge fill="#FFFFFF" height={12} />
+                <ZigzagEdge fill="#FCFCFC" height={12} />
               </div>
             </div>
 
@@ -203,7 +202,8 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
                   <motion.div
                     // 각 조각은 세로 스트립 형태로 조금씩 아래로 떨어지며 사라진다
                     key={index}
-                    className="flex-1 bg-white border-r border-gray-200"
+                    className="flex-1 border-r border-gray-200"
+                    style={{ background: '#FCFCFC' }}
                     initial={{ y: 0, scaleY: 1, opacity: 1 }}
                     animate={{ y: 220, scaleY: 0.3, opacity: 0 }}
                     transition={{
@@ -215,7 +215,6 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
                 ))}
               </div>
             )}
-          </div>
 
           <button
             type="button"

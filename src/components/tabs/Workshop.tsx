@@ -1,5 +1,5 @@
 import React from 'react';
-import { FeatureReceipt } from '../FeatureReceipt';
+import { Workshop20 } from '../Workshop20';
 import type { StudyItem } from '../../types';
 import type { ProfileContext } from '../../lib/ai';
 
@@ -11,7 +11,7 @@ interface WorkshopProps {
   onPrintReceipt?: () => void;
   onLevelUp?: (newLevel: number) => void;
   profile?: ProfileContext | null;
-  user?: { displayName?: string | null } | null;
+  user?: { displayName?: string | null; email?: string | null } | null;
 }
 
 export const Workshop: React.FC<WorkshopProps> = ({
@@ -25,14 +25,12 @@ export const Workshop: React.FC<WorkshopProps> = ({
   user,
 }) => {
   return (
-    <FeatureReceipt
+    <Workshop20
       items={items}
       onAddItem={onAddItem}
+      onPrintReceipt={onPrintReceipt}
       isResetting={isResetting}
       onResetComplete={onResetComplete}
-      onPrintReceipt={onPrintReceipt}
-      onLevelUp={onLevelUp}
-      profile={profile}
       user={user}
     />
   );

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import type { User } from 'firebase/auth';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 import { Navbar } from '../components/Navbar';
 import type { TabId } from '../components/TabNavigation';
 import { Workshop as WorkshopTabs } from '../components/tabs/Workshop';
@@ -28,7 +29,7 @@ interface WorkshopPageProps {
 }
 
 const Workshop: React.FC<WorkshopPageProps> = ({ user }) => {
-  // 사용자의 개별 공부 세션을 누적 보관하는 배열 상태 (sessions)
+  const theme = useTheme();
   const [sessions, setSessions] = useState<StudyItem[]>([]);
   const [activeTab, setActiveTab] = useState<TabId>('workshop');
   const [isResetting, setIsResetting] = useState(false);
@@ -63,7 +64,7 @@ const Workshop: React.FC<WorkshopPageProps> = ({ user }) => {
     console.log('Logout button clicked');
     try {
       await signOutUser();
-      setItems([]);
+      setSessions([]);
       setProfile(null);
     } catch (error) {
       console.error('로그아웃 실패', error);
@@ -143,7 +144,7 @@ const Workshop: React.FC<WorkshopPageProps> = ({ user }) => {
     setShowLogoutConfirm(false);
     try {
       await signOutUser();
-      setItems([]);
+      setSessions([]);
       setProfile(null);
     } catch (err) {
       console.error('로그아웃 실패', err);
@@ -180,6 +181,7 @@ const Workshop: React.FC<WorkshopPageProps> = ({ user }) => {
           <MyOffice
             user={user}
             profile={profile}
+            isAdmin={user?.email === 'utone6300@gmail.com'}
             onOpenProfileSettings={() => setShowProfileModal(true)}
           />
         );
@@ -201,10 +203,14 @@ const Workshop: React.FC<WorkshopPageProps> = ({ user }) => {
   };
 
   return (
-    <div className="app-container antialiased min-h-screen overflow-x-hidden bg-[#0a0a0a] text-white selection:bg-brand-lime selection:text-black bg-noise">
+    <div
+      className="app-container antialiased min-h-screen overflow-x-hidden selection:bg-brand-lime selection:text-black bg-noise transition-colors duration-300"
+      style={{ background: theme.bg, color: theme.text }}
+    >
       <FlyReceiptOverlay
         visible={flyToCollection}
         onComplete={handleFlyToCollectionComplete}
+        sessionCount={sessions.length}
       />
       <ProfileSettingsModal
         isOpen={showProfileModal}
@@ -236,7 +242,10 @@ const Workshop: React.FC<WorkshopPageProps> = ({ user }) => {
         onTabChange={isLoggedIn ? setActiveTab : undefined}
       />
       <main>
-        <div className="min-h-screen bg-[#0a0a0a] pt-16 relative overflow-x-hidden">
+        <div
+          className="min-h-screen pt-16 relative overflow-x-hidden transition-colors duration-300"
+          style={{ background: theme.bg }}
+        >
           <GlobalBackground />
           <AnimatePresence mode="wait">
             <motion.div

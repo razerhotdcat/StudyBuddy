@@ -28,6 +28,7 @@ interface ReceiptStackCardProps {
 
 const CARD_TOP_OFFSET = 24;
 const CARD_STACK_OFFSET = 44;
+const RECEIPT_BG = '#FCFCFC';
 
 export const ReceiptStackCard: React.FC<ReceiptStackCardProps> = ({
   session,
@@ -89,7 +90,7 @@ export const ReceiptStackCard: React.FC<ReceiptStackCardProps> = ({
       )}
       <p className="mt-2 text-sm uppercase tracking-wider" style={{ color: '#000000' }}>Flow Receipt</p>
       <div className="mt-2 -mx-5 -mb-4 overflow-visible pb-2">
-        <ZigzagEdge fill="#FFFFFF" height={10} />
+        <ZigzagEdge fill={RECEIPT_BG} height={10} />
       </div>
     </motion.div>
   );

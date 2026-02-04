@@ -7,6 +7,8 @@ import { ReceiptDetailModal } from '../ReceiptDetailModal';
 import { AIManagerBubble } from '../AIManagerBubble';
 import { getRandomManagerComment } from '../../lib/managerComments';
 import { ZigzagEdge } from '../ZigzagEdge';
+import { useTheme } from '../../context/ThemeContext';
+import { ReceiptFrame } from '../ReceiptFrame';
 
 const CARD_TOP_OFFSET = 24;
 const CARD_STACK_OFFSET = 44;
@@ -24,6 +26,7 @@ const formatDuration = (minutes: number) => {
 };
 
 export const Collection: React.FC<CollectionProps> = ({ userId }) => {
+  const theme = useTheme();
   const [sessions, setSessions] = useState<StudySessionDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,10 +57,10 @@ export const Collection: React.FC<CollectionProps> = ({ userId }) => {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center transition-colors" style={{ background: theme.bg, color: theme.text }}>
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-2 border-brand-lime border-t-transparent rounded-full animate-spin" />
-          <span className="text-sm text-gray-400 font-mono">LOADING RECEIPTS...</span>
+          <span className="text-sm font-mono opacity-80">LOADING RECEIPTS...</span>
         </div>
       </div>
     );
@@ -65,7 +68,7 @@ export const Collection: React.FC<CollectionProps> = ({ userId }) => {
 
   if (error) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center transition-colors" style={{ background: theme.bg, color: theme.text }}>
         <p className="text-red-400 font-mono text-sm">{error}</p>
       </div>
     );
@@ -73,7 +76,7 @@ export const Collection: React.FC<CollectionProps> = ({ userId }) => {
 
   if (sessions.length === 0) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center transition-colors" style={{ background: theme.bg, color: theme.text }}>
         <div className="text-center space-y-6">
           <div className="flex justify-center">
             <div className="w-20 h-20 rounded-full bg-gray-800 flex items-center justify-center">
@@ -95,20 +98,27 @@ export const Collection: React.FC<CollectionProps> = ({ userId }) => {
   const totalMeters = (sessions.length * 0.08).toFixed(1);
 
   return (
-    <section className="py-12 bg-[#0a0a0a] text-white relative overflow-hidden min-h-[70vh]">
+    <section className="py-12 relative overflow-hidden min-h-[70vh] transition-colors" style={{ background: theme.bg, color: theme.text }}>
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col items-center text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-extrabold mb-2 tracking-tight">
             영수증 <span className="text-brand-lime">창고</span>
           </h2>
-          <p className="text-gray-300 text-base font-mono mb-2">
-            발행한 플로우 영수증 {sessions.length}장
+          <p className="text-base font-mono mb-2 opacity-90">
+            성장을 증명하는 영수증 — 당신의 기록이 쌓입니다.
           </p>
-          <p className="text-brand-lime font-mono text-base font-bold">
-            당신의 역사가 총 <span className="text-xl">{totalMeters}</span>m 쌓였습니다
+          <p className="text-gray-300 text-base font-mono mb-2">
+            발행한 플로우 영수증 {sessions.length}장 · 총 <span className="text-brand-lime font-bold">{totalMeters}m</span>
           </p>
         </div>
+
+        <ReceiptFrame caption="AI 점주: 오늘도 한 장 한 장이 당신의 역사가 됩니다." className="max-w-2xl mx-auto mb-6">
+          <div className="space-y-2 text-center">
+            <p className="font-bold">발행 영수증 {sessions.length}장</p>
+            <p className="text-gray-600 text-sm">클릭하여 상세 보기 · 삭제 시 파쇄 효과</p>
+          </div>
+        </ReceiptFrame>
 
         <div className="relative mx-auto" style={{ width: '100%', maxWidth: '24rem' }}>
           {/* 스택 뒤 겹겹이 그림자 (종이 뭉치 깊이감) */}
