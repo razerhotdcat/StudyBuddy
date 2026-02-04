@@ -46,7 +46,7 @@ export const MyOffice: React.FC<MyOfficeProps> = ({
   const maxMin = Math.max(1, ...weekMinutes);
 
   return (
-    <section className="relative py-12 bg-brand-black text-white min-h-[70vh]">
+    <section className="relative py-12 bg-[#0a0a0a] text-white min-h-[70vh]">
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none" aria-hidden />
       <div className="container mx-auto px-4 relative z-10 max-w-2xl">
         {/* 프로필 상단 */}

@@ -95,17 +95,17 @@ export const Collection: React.FC<CollectionProps> = ({ userId }) => {
   const totalMeters = (sessions.length * 0.08).toFixed(1);
 
   return (
-    <section className="py-12 bg-brand-black text-white relative overflow-hidden min-h-[70vh]">
+    <section className="py-12 bg-[#0a0a0a] text-white relative overflow-hidden min-h-[70vh]">
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col items-center text-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold mb-2">
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-2 tracking-tight">
             영수증 <span className="text-brand-lime">창고</span>
           </h2>
-          <p className="text-gray-400 text-sm font-mono mb-2">
+          <p className="text-gray-300 text-base font-mono mb-2">
             발행한 플로우 영수증 {sessions.length}장
           </p>
-          <p className="text-brand-lime font-mono text-sm font-bold">
+          <p className="text-brand-lime font-mono text-base font-bold">
             당신의 역사가 총 <span className="text-xl">{totalMeters}</span>m 쌓였습니다
           </p>
         </div>

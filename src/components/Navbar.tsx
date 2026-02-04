@@ -63,8 +63,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   // 로그인 후에는 다크 모드 간소화 버전
   const isLoggedIn = !!user;
   const navClasses = isLoggedIn
-    ? 'fixed top-0 left-0 w-full z-50 bg-gray-900 border-b border-gray-800 py-3'
-    : `fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/80 backdrop-blur-md border-b border-gray-100 py-3' : 'bg-transparent py-5'}`;
+    ? 'fixed top-0 left-0 w-full z-50 bg-[#0a0a0a] border-b border-gray-800 py-3'
+    : 'fixed top-0 left-0 w-full z-50 bg-[#0a0a0a]/95 backdrop-blur-sm border-b border-gray-800 py-4';
 
   return (
     <nav className={navClasses}>
@@ -141,18 +141,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Desktop Nav (비로그인) */}
         {!isLoggedIn && (
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-sm font-medium hover:text-gray-600 transition-colors">기능 소개</a>
-            <a href="#philosophy" className="text-sm font-medium hover:text-gray-600 transition-colors">철학</a>
+          <div className="hidden md:flex items-center gap-8 text-sm">
+            <a href="#features" className="font-medium text-gray-300 hover:text-white transition-colors">기능 소개</a>
+            <a href="#philosophy" className="font-medium text-gray-300 hover:text-white transition-colors">철학</a>
             <div className="flex items-center gap-3">
               <button
-                className="text-sm font-bold hover:underline px-1 py-2"
+                className="text-base font-bold text-white hover:text-[#ccff00] px-1 py-2 transition-colors"
                 onClick={onLoginClick}
               >
                 로그인
               </button>
               <button
-                className="text-sm font-bold hover:underline px-1 py-2"
+                className="text-base font-bold text-black bg-[#ccff00] rounded-full px-4 py-2 hover:bg-white transition-colors"
                 onClick={onLoginClick}
               >
                 회원가입
@@ -243,13 +243,13 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Mobile Menu (로그인 전에만 표시) */}
-      {!isLoggedIn && isMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-white border-b border-gray-100 p-4 flex flex-col gap-4 md:hidden shadow-lg">
-          <a href="#features" className="block py-2 font-medium" onClick={() => setIsMenuOpen(false)}>기능 소개</a>
-          <a href="#philosophy" className="block py-2 font-medium" onClick={() => setIsMenuOpen(false)}>철학</a>
-          <div className="h-[1px] bg-gray-100 w-full"></div>
+        {!isLoggedIn && isMenuOpen && (
+        <div className="absolute top-full left-0 w-full bg-[#0a0a0a] border-b border-gray-800 p-4 flex flex-col gap-4 md:hidden shadow-lg shadow-black/40">
+          <a href="#features" className="block py-2 font-medium text-gray-200 hover:text-white" onClick={() => setIsMenuOpen(false)}>기능 소개</a>
+          <a href="#philosophy" className="block py-2 font-medium text-gray-200 hover:text-white" onClick={() => setIsMenuOpen(false)}>철학</a>
+          <div className="h-[1px] bg-gray-800 w-full"></div>
           <button
-            className="w-full text-left font-bold py-2"
+            className="w-full text-left font-bold py-2 text-white hover:text-[#ccff00]"
             onClick={() => {
               onLoginClick();
               setIsMenuOpen(false);
@@ -258,7 +258,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             로그인
           </button>
           <button
-            className="w-full text-left font-bold py-2"
+            className="w-full text-left font-bold py-2 text-black bg-[#ccff00] rounded-lg hover:bg-white"
             onClick={() => {
               onLoginClick();
               setIsMenuOpen(false);

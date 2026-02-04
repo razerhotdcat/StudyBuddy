@@ -129,7 +129,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
               StudyBuddy가 만드는 당신의 학습 흐름
             </h2>
             <div className="grid gap-6 md:grid-cols-3">
-              {/* 카드 1: AI 점주 */}
+              {/* 카드 1: AI 점주의 인사이트 */}
               <div className="relative overflow-hidden rounded-2xl bg-[#111111] border border-[#333333] p-6 transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(204,255,0,0.35)]">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1F2933] mb-4">
                   <span className="w-2 h-2 rounded-full bg-[#CCFF00]" />
@@ -138,23 +138,26 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
                   </span>
                 </div>
                 <h3 className="text-lg font-semibold mb-3 text-white">
-                  AI 점주의 날카로운 분석
+                  AI 점주의 인사이트
                 </h3>
                 <p className="text-sm text-[#9CA3AF] mb-4">
-                  산만했던 메모를 하나의 이야기로 엮어, 오늘의 핵심 인사이트와
-                  다음 스텝을 제안합니다.
+                  오늘 쌓인 기록을 바탕으로, 당신의 학습 패턴을 한 줄로 요약해 드립니다.
                 </p>
                 <div className="relative mt-4">
                   <div className="inline-block max-w-xs rounded-2xl bg-[#0f172a] border border-[#1f2937] px-4 py-3 shadow-[0_10px_25px_rgba(15,23,42,0.8)]">
                     <p className="text-[13px] font-mono text-[#E5E7EB] leading-relaxed">
-                      “방금 푼 문제, <span className="text-[#CCFF00]">두 번째 시도에서</span> 바로 풀었네요. 이 패턴을 다른 응용 문제에도 적용해봐요.”
+                      <span className="text-[#9CA3AF] text-[11px] block mb-1">
+                        오늘의 핵심 패턴
+                      </span>
+                      “<span className="text-[#CCFF00]">짧게 자주</span> 반복해서 푼 문제가 유독 많아요.
+                      이 리듬을 내일도 그대로 가져가 봅시다.”
                     </p>
                   </div>
                   <div className="absolute -bottom-1 left-10 w-4 h-4 bg-[#0f172a] border-l border-b border-[#1f2937] rotate-45" />
                 </div>
               </div>
 
-              {/* 카드 2: 컬렉션 */}
+              {/* 카드 2: 나만의 영수증 아카이브 */}
               <div className="relative overflow-hidden rounded-2xl bg-[#111111] border border-[#333333] p-6 transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(204,255,0,0.35)]">
                 <h3 className="text-lg font-semibold mb-3 text-white">
                   나만의 영수증 아카이브
@@ -182,20 +185,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
                 </div>
               </div>
 
-              {/* 카드 3: 스퀘어 광장 */}
+              {/* 카드 3: 실시간 몰입 스퀘어 */}
               <div className="relative overflow-hidden rounded-2xl bg-[#111111] border border-[#333333] p-6 transition-shadow duration-300 hover:shadow-[0_0_40px_rgba(204,255,0,0.35)]">
                 <h3 className="text-lg font-semibold mb-3 text-white">
-                  실시간 몰입 피드
+                  실시간 몰입 스퀘어
                 </h3>
                 <p className="text-sm text-[#9CA3AF] mb-4">
-                  지금 이 순간, 누가 어디서 무엇을 공부하는지 라이브 피드로
-                  확인하세요. 함께 달리면 덜 지칩니다.
+                  지금 이 순간, 다른 사용자들이 어디에서 무엇에 몰입하고 있는지
+                  천천히 흘러가는 피드로 보여줍니다.
                 </p>
                 <div className="relative h-28 overflow-hidden rounded-xl bg-[#020617] border border-[#1f2937]">
                   <motion.div
-                    className="absolute inset-y-4 flex gap-3 px-4"
-                    initial={{ x: 0 }}
-                    animate={{ x: ['0%', '-60%'] }}
+                    className="absolute inset-x-4 flex flex-col gap-2 py-3"
+                    initial={{ y: 0 }}
+                    animate={{ y: ['0%', '-50%'] }}
                     transition={{
                       duration: 12,
                       repeat: Infinity,
@@ -212,7 +215,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onStart }) => {
                     ].map((label, idx) => (
                       <div
                         key={idx}
-                        className="min-w-[160px] h-16 rounded-lg bg-white/5 border border-[#4b5563] flex items-center px-3 gap-2"
+                        className="w-full h-14 rounded-lg bg-white/5 border border-[#4b5563] flex items-center px-3 gap-2"
                       >
                         <div className="w-2 h-2 rounded-full bg-[#22c55e]" />
                         <div className="flex flex-col text-left">

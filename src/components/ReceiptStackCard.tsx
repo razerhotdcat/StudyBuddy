@@ -70,24 +70,24 @@ export const ReceiptStackCard: React.FC<ReceiptStackCardProps> = ({
     >
       <div className="border-b border-dashed border-gray-200 pb-2 mb-2">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-[10px] uppercase tracking-wider" style={{ color: '#000000' }}>
+          <span className="text-sm uppercase tracking-wider" style={{ color: '#000000' }}>
             {formatDate(session.createdAt)}
           </span>
-          <span className="text-xs font-bold bg-brand-lime/90 px-2 py-0.5 rounded" style={{ color: '#000000' }}>
+          <span className="text-sm font-bold bg-brand-lime/90 px-2 py-0.5 rounded" style={{ color: '#000000' }}>
             {formatDuration(session.minutes)}
           </span>
         </div>
       </div>
-      <p className="text-sm font-bold leading-tight line-clamp-2" style={{ color: '#000000' }}>
+      <p className="text-base font-bold leading-tight line-clamp-2" style={{ color: '#000000' }}>
         {session.mode === 'target' && <span className="text-brand-lime mr-1">◉</span>}
         {session.subject}
       </p>
       {session.keyInsight && (
-        <p className="mt-1 text-[10px] line-clamp-2 border-l-2 border-brand-lime/50 pl-2" style={{ color: '#000000' }}>
+        <p className="mt-1 text-sm leading-relaxed line-clamp-2 border-l-2 border-brand-lime/50 pl-2" style={{ color: '#000000' }}>
           {session.keyInsight}
         </p>
       )}
-      <p className="mt-2 text-[9px] uppercase tracking-wider" style={{ color: '#000000' }}>Flow Receipt</p>
+      <p className="mt-2 text-sm uppercase tracking-wider" style={{ color: '#000000' }}>Flow Receipt</p>
       <div className="mt-2 -mx-5 -mb-4 overflow-visible pb-2">
         <ZigzagEdge fill="#FFFFFF" height={10} />
       </div>

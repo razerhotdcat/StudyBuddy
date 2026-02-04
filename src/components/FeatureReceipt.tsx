@@ -84,7 +84,7 @@ export const FeatureReceipt: React.FC<FeatureReceiptProps> = ({
   /** ADD SESSION 시 영수증 한 칸 밀려나오는 step (지익- 사운드) */
   const [addSessionStep, setAddSessionStep] = useState(0);
   /** STOP 후 배출구 영수증 대기: 그 자리 고정 + 약 10cm(≈40px) 더 삐져나온 상태 */
-  const [peekAfterStop, setPeekAfterStop] = useState<{ subject: string; time: string; memo: string } | null>(null);
+  const [peekAfterStop, setPeekAfterStop] = useState<{ subject: string; time: string; memo: string; duration: number } | null>(null);
   /** 지익- 소리와 싱크: 1px 진동만 재생할 때 true */
   const [soundSyncVibrate, setSoundSyncVibrate] = useState(false);
 
@@ -118,19 +118,12 @@ export const FeatureReceipt: React.FC<FeatureReceiptProps> = ({
   const handleStopTimer = () => {
     if (!isTimerRunning || !timerSubject) return;
     const minutes = Math.max(1, Math.round(timerSeconds / 60));
-    onAddItem({
-      subject: timerSubject,
-      duration: minutes,
-      keyInsight: keyInsightInput.trim() || undefined,
-      dailyNote: dailyNoteInput.trim() || undefined,
-      flowLog: flowLogInput.trim() || undefined,
-      mode,
-      thoughtNotes: thoughtNotes.length > 0 ? thoughtNotes : undefined,
-    });
+    // 타이머를 멈추고 현재 상태를 배출구에 고정 (10cm 더 나와있는 상태로 대기)
     setPeekAfterStop({
       subject: timerSubject,
       time: formatTimer(timerSeconds),
       memo: flowLogInput.trim() || keyInsightInput.trim() || '',
+      duration: minutes,
     });
     setIsTimerRunning(false);
     setTimerSeconds(0);
@@ -145,21 +138,29 @@ export const FeatureReceipt: React.FC<FeatureReceiptProps> = ({
 
   /** ADD SESSION: 현재 세션을 영수증에 중간 인쇄, 다음 작업 준비, 지익- 사운드 + 한 칸 밀려나옴 */
   const handleAddSession = () => {
-    const subject = (timerSubject || subjectInput.trim()) || '세션';
-    const minutes = isTimerRunning ? Math.max(1, Math.round(timerSeconds / 60)) : 0;
-    if (minutes > 0 || subject !== '세션') {
+    // 현재 세션의 데이터(과목/시간/메모)를 세션 배열로 중간 인쇄
+    const activeSubject = (peekAfterStop?.subject || timerSubject || subjectInput.trim()) || '세션';
+    const computedMinutes = isTimerRunning
+      ? Math.max(1, Math.round(timerSeconds / 60))
+      : peekAfterStop?.duration ?? 0;
+
+    // 유효한 시간 또는 제목이 있을 때만 세션 추가
+    if (computedMinutes > 0 || activeSubject !== '세션') {
       onAddItem({
-        subject,
-        duration: minutes || 1,
+        subject: activeSubject,
+        duration: computedMinutes || 1,
         keyInsight: keyInsightInput.trim() || undefined,
         dailyNote: dailyNoteInput.trim() || undefined,
         flowLog: flowLogInput.trim() || undefined,
         mode,
         thoughtNotes: thoughtNotes.length > 0 ? thoughtNotes : undefined,
       });
+      // '지익-' 사운드 + 한 칸 밀려나오는 애니메이션 트리거
       SoundManager.playPrinting();
       setAddSessionStep((s) => s + 1);
     }
+
+    // 다음 세션을 위해 입력 및 타이머 초기화, 배출구는 대기 상태로 리셋
     setIsTimerRunning(false);
     setTimerSeconds(0);
     setTimerSubject(null);
@@ -169,6 +170,7 @@ export const FeatureReceipt: React.FC<FeatureReceiptProps> = ({
     setFlowLogInput('');
     setThoughtNotes([]);
     setCurrentThought('');
+    setPeekAfterStop(null);
   };
 
   const handleAddThought = () => {

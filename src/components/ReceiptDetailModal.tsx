@@ -35,21 +35,30 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
 }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [isShredding, setIsShredding] = useState(false);
   const managerIndexPhrase = useMemo(() => getRandomManagerComment('collection_index'), [session?.id]);
+  const SHRED_DURATION_MS = 600;
 
   const handleDelete = async () => {
     if (!userId || !session) return;
     setDeleting(true);
-    try {
-      await deleteStudySession(userId, session.id);
-      setShowDeleteConfirm(false);
-      onDeleted(session.id);
-      onClose();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setDeleting(false);
-    }
+    // 삭제 확정 시: 확인 팝업을 닫고, 파쇄(Shredding) 애니메이션 실행
+    setShowDeleteConfirm(false);
+    setIsShredding(true);
+
+    // 애니메이션이 끝난 뒤 실제 삭제 처리
+    window.setTimeout(async () => {
+      try {
+        await deleteStudySession(userId, session.id);
+        onDeleted(session.id);
+        onClose();
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setDeleting(false);
+        setIsShredding(false);
+      }
+    }, SHRED_DURATION_MS);
   };
 
   if (!session) return null;
@@ -73,14 +82,17 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
           onClick={(e) => e.stopPropagation()}
         >
           {/* 글로벌 영수증 스타일: #FFFFFF 배경, #000000 글자, 지그재그 하단 */}
-          <div
-            className="w-[min(320px,90vw)] max-h-[75vh] overflow-y-auto overflow-x-visible rounded-t-lg border-2 border-brand-lime border-b-0 pb-6"
-            style={{
-              background: '#FFFFFF',
-              boxShadow: '0 25px 50px -12px rgba(0,0,0,0.45), 0 12px 24px -8px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.05), 0 0 40px rgba(204,255,0,0.08)',
-            }}
-          >
-            <div className="p-5 pb-4 font-mono" style={{ color: '#000000' }}>
+          <div className="relative w-[min(320px,90vw)] max-h-[75vh]">
+            {/* 실제 영수증 본문 */}
+            <div
+              className={`w-full overflow-y-auto overflow-x-visible rounded-t-lg border-2 border-brand-lime border-b-0 pb-6 transition-opacity duration-150 ${isShredding ? 'opacity-0' : 'opacity-100'}`}
+              style={{
+                background: '#FFFFFF',
+                boxShadow:
+                  '0 25px 50px -12px rgba(0,0,0,0.45), 0 12px 24px -8px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.05), 0 0 40px rgba(204,255,0,0.08)',
+              }}
+            >
+              <div className="p-5 pb-4 font-mono" style={{ color: '#000000' }}>
               {/* 헤더 */}
               <div className="flex flex-col items-center border-b-2 border-dashed border-gray-300 pb-4 mb-4">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm mb-2" style={{ background: '#000000', color: '#ccff00' }}>
@@ -178,10 +190,31 @@ export const ReceiptDetailModal: React.FC<ReceiptDetailModalProps> = ({
                   삭제
                 </button>
               </div>
+              </div>
+              <div className="overflow-visible pb-2">
+                <ZigzagEdge fill="#FFFFFF" height={12} />
+              </div>
             </div>
-            <div className="overflow-visible pb-2">
-              <ZigzagEdge fill="#FFFFFF" height={12} />
-            </div>
+
+            {/* 파쇄(Shredding) 애니메이션 레이어: 얇은 조각들이 아래로 갈라지며 사라짐 */}
+            {isShredding && (
+              <div className="pointer-events-none absolute inset-0 flex overflow-hidden">
+                {Array.from({ length: 14 }).map((_, index) => (
+                  <motion.div
+                    // 각 조각은 세로 스트립 형태로 조금씩 아래로 떨어지며 사라진다
+                    key={index}
+                    className="flex-1 bg-white border-r border-gray-200"
+                    initial={{ y: 0, scaleY: 1, opacity: 1 }}
+                    animate={{ y: 220, scaleY: 0.3, opacity: 0 }}
+                    transition={{
+                      duration: SHRED_DURATION_MS / 1000,
+                      ease: 'easeIn',
+                      delay: index * 0.015,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           <button

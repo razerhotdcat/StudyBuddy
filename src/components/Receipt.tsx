@@ -92,9 +92,17 @@ export const Receipt: React.FC<ReceiptProps> = ({
   const zigzagBottom =
     'polygon(0 0, 100% 0, 100% 100%, 96.5% 96%, 93% 100%, 89.5% 96%, 86% 100%, 82.5% 96%, 79% 100%, 75.5% 96%, 72% 100%, 68.5% 96%, 65% 100%, 61.5% 96%, 58% 100%, 54.5% 96%, 51% 100%, 47.5% 96%, 44% 100%, 40.5% 96%, 37% 100%, 33.5% 96%, 30% 100%, 26.5% 96%, 23% 100%, 19.5% 96%, 16% 100%, 12.5% 96%, 9% 100%, 5.5% 96%, 2% 100%, 0 100%)';
 
+  // 세션이 누적될 때 영수증 높이/레이아웃을 부드럽게 확장
+  const prevLengthRef = React.useRef(baseItems.length);
+  const prevLength = prevLengthRef.current;
+  React.useEffect(() => {
+    prevLengthRef.current = baseItems.length;
+  }, [baseItems.length]);
+
   return (
     <div className={`pb-8 overflow-visible ${className}`.trim()} aria-hidden={false}>
     <motion.div
+      layout
       className="relative font-mono w-full max-w-[95vw] md:max-w-[500px] mx-auto overflow-visible receipt-paper"
       style={{
         background: '#FFFFFF',
@@ -145,22 +153,26 @@ export const Receipt: React.FC<ReceiptProps> = ({
         <div className="mb-8">
           <p className="text-[0.75em] font-bold uppercase tracking-widest mb-2" style={{ color: textBlack }}>MISSION TITLE</p>
           <div className="space-y-3">
-            {baseItems.map((item, idx) => (
-              <motion.div
-                key={`${item.subject}-${idx}`}
-                className="flex justify-between items-start leading-snug"
-                style={{ color: textBlack, fontSize: '1.1em' }}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.15 }}
-              >
-                <span className="font-bold break-words flex-1">
-                  {item.mode === 'target' && <span className="text-brand-lime mr-1">◉</span>}
-                  {item.subject}
-                </span>
-                <span className="font-bold shrink-0 ml-2">{formatDuration(item.duration)}</span>
-              </motion.div>
-            ))}
+            {baseItems.map((item, idx) => {
+              const isNew = baseItems.length > prevLength && idx >= prevLength;
+              return (
+                <motion.div
+                  key={`${item.subject}-${idx}`}
+                  layout
+                  className="flex justify-between items-start leading-snug"
+                  style={{ color: textBlack, fontSize: '1.1em' }}
+                  initial={isNew ? { opacity: 0, y: -8 } : { opacity: 1, y: 0 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ type: 'spring', stiffness: 220, damping: 24 }}
+                >
+                  <span className="font-bold break-words flex-1">
+                    {item.mode === 'target' && <span className="text-brand-lime mr-1">◉</span>}
+                    {item.subject}
+                  </span>
+                  <span className="font-bold shrink-0 ml-2">{formatDuration(item.duration)}</span>
+                </motion.div>
+              );
+            })}
             {showTimer && (
               <motion.div
                 className="flex justify-between items-start bg-brand-lime/15 p-2 rounded leading-snug"

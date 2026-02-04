@@ -44,14 +44,14 @@ export const Square: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center bg-[#0a0a0a]">
         <div className="w-10 h-10 border-2 border-brand-lime border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <section className="relative py-0 bg-brand-black text-white min-h-[70vh] flex flex-col">
+    <section className="relative py-0 bg-[#0a0a0a] text-white min-h-[70vh] flex flex-col">
       <div className="sticky top-0 z-10 border-b-2 border-brand-lime bg-black overflow-hidden shrink-0">
         <div className="py-3 flex items-center">
           <div className="flex shrink-0 items-center gap-2 px-4 border-r-2 border-brand-lime">
