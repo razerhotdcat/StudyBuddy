@@ -5,8 +5,119 @@
   --color-brand-black: #111111;
 }
 
-body {
-  background-color: #111111;
-  color: white;
+html, body {
   margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: #0a0a0a;
+  color: #fff;
+}
+
+#root,
+.app-container {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: #0a0a0a;
+}
+
+/* 글로벌 배경 노이즈 텍스처 (미세한 입자감) */
+.bg-noise::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  mix-blend-mode: soft-light;
+  background-image:
+    radial-gradient(circle at 0 0, rgba(255,255,255,0.10) 0, transparent 55%),
+    radial-gradient(circle at 100% 0, rgba(255,255,255,0.06) 0, transparent 55%),
+    radial-gradient(circle at 0 100%, rgba(255,255,255,0.05) 0, transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(255,255,255,0.09) 0, transparent 55%);
+  background-size: 220px 220px;
+  z-index: 0;
+}
+
+/* 커스텀 스크롤바: 다크모드, 8px, 트랙 #1a1a1a / 핸들 #555 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #555 #1a1a1a;
+}
+
+/* Webkit (Chrome, Safari, Edge): 기본 흰색 스크롤바 대체 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+::-webkit-scrollbar-corner {
+  background: #1a1a1a;
+}
+
+/* 영수증 전용: 모노스페이스/도트 감성 */
+.receipt-paper {
+  font-family: "JetBrains Mono", ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, "Courier New", monospace;
+}
+
+/* 워크샵: Pseudo-3D 프린터 기계 (perspective, box-shadow, gradients) */
+.workshop-printer-3d {
+  perspective: 800px;
+}
+.workshop-printer-machine-3d > div {
+  transform-style: preserve-3d;
+  box-shadow:
+    0 30px 60px -15px rgba(0,0,0,0.7),
+    0 0 0 1px rgba(255,255,255,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.1),
+    inset 0 -1px 0 rgba(0,0,0,0.3);
+}
+
+/* 워크샵/랜딩: 영수증이 입구에서 아래로 밀려나오는 Ejection (cubic-bezier 가감속) */
+@keyframes receipt-paper-out {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(0); }
+}
+.receipt-printing-out {
+  animation: receipt-paper-out 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 워크샵: 배출된 영수증 래퍼 z-index/레이아웃 안정화 */
+.receipt-ejection-wrap {
+  position: relative;
+  z-index: 10;
+}
+.workshop-receipt-ejected {
+  position: relative;
+  z-index: 20;
+}
+
+/* 지익- 소리와 싱크: 1px 단위 미세 진동 (ADD SESSION / FINAL PRINT 시에만) */
+@keyframes receipt-eject-vibrate {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  25% { transform: translateY(1px) translateX(-1px); }
+  50% { transform: translateY(0) translateX(1px); }
+  75% { transform: translateY(-1px) translateX(0); }
+}
+.receipt-eject-vibrate {
+  animation: receipt-eject-vibrate 0.08s ease-in-out infinite;
+}
+
+/* 타이머 작동 중 배출구 영수증 미세 떨림(Vibration) */
+@keyframes receipt-peek-vibrate {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-1px); }
+  75% { transform: translateX(1px); }
+}
+.receipt-peek-vibrate {
+  animation: receipt-peek-vibrate 0.12s ease-in-out infinite;
 }

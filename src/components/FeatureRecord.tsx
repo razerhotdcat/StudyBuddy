@@ -21,7 +21,7 @@ export const FeatureRecord: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 bg-gray-50 overflow-hidden" id="features">
+    <section className="py-24 bg-[#0a0a0a] overflow-hidden" id="features">
       <div className="container mx-auto px-4 flex flex-col md:flex-row items-center gap-16">
         
         {/* Left: Text */}
@@ -30,9 +30,13 @@ export const FeatureRecord: React.FC = () => {
             <Sparkles size={14} />
             <span>SMART LOGGING</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-            완벽하지 않아도 됩니다.<br/>
-            <span className="text-brand-black decoration-brand-lime underline decoration-4 underline-offset-4">AI가 흐름을 정리합니다.</span>
+          <h2 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+            <span className="text-white bg-brand-black px-3 py-1 rounded-lg">
+              완벽하지 않아도 됩니다.
+            </span><br/>
+            <span className="text-brand-black decoration-brand-lime underline decoration-4 underline-offset-4">
+              AI가 흐름을 정리합니다.
+            </span>
           </h2>
           <p className="text-gray-600 text-lg mb-8 leading-relaxed">
             공부하다가 딴짓했나요? 순서가 뒤죽박죽인가요? <br/>

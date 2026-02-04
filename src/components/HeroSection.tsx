@@ -4,7 +4,11 @@ import { Button } from './ui/Button';
 import { Receipt } from './Receipt';
 import { ArrowRight } from 'lucide-react';
 
-export const HeroSection: React.FC = () => {
+interface HeroSectionProps {
+  onStartClick: () => void;
+}
+
+export const HeroSection: React.FC<HeroSectionProps> = ({ onStartClick }) => {
   return (
     <section className="relative min-h-screen pt-32 pb-20 px-4 flex items-center overflow-hidden bg-white">
       {/* Background Decorative Blobs */}
@@ -38,9 +42,13 @@ export const HeroSection: React.FC = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button size="lg" className="group">
-              영수증 발급받기 
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <Button
+              size="lg"
+              className="group bg-[#ccff00] text-black text-xl md:text-2xl px-10 py-4 rounded-full shadow-[0_12px_30px_rgba(0,0,0,0.25)] hover:bg-white hover:text-black transition-colors"
+              onClick={onStartClick}
+            >
+              무료로 시작하기
+              <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button variant="outline" size="lg">
               데모 체험하기
@@ -76,7 +84,7 @@ export const HeroSection: React.FC = () => {
                ease: [0.16, 1, 0.3, 1],
                delay: 0.2 
              }}
-             className="relative z-20 w-full max-w-sm"
+             className="relative z-30 w-full max-w-sm"
           >
             <Receipt />
             
