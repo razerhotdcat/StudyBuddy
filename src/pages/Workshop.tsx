@@ -11,7 +11,6 @@ import { Square } from '../components/tabs/Square';
 import { MyOffice } from '../components/tabs/MyOffice';
 import { Footer } from '../components/Footer';
 import {
-  saveStudySession,
   signInWithGoogle,
   signOutUser,
   getUserProfile,
@@ -78,7 +77,10 @@ const Workshop: React.FC<WorkshopPageProps> = ({ user }) => {
 
   /** 로고 클릭: WORKSHOP으로 이동 후 영수증 슬라이드아웃 → 상태 초기화(Soft Refresh) */
   const handleLogoClick = () => {
-    if (isResetting) return;
+    // 이미 리셋 중이거나 플라이 애니메이션 중이면 무시
+    if (isResetting || flyToCollection) return;
+    // 이미 WORKSHOP 탭이면 아무 것도 하지 않음
+    if (activeTab === 'workshop') return;
     setActiveTab('workshop');
     setIsResetting(true);
   };
@@ -90,26 +92,9 @@ const Workshop: React.FC<WorkshopPageProps> = ({ user }) => {
     setIsResetting(false);
   };
 
-  /** [영수증 발행] 클릭: 현재 세션들을 Firebase에 저장하고 COLLECTION으로 날아가는 애니 후 탭 전환 */
+  /** [영수증 발행]: Workshop20에서 저장 후 호출 → COLLECTION으로 날아가는 애니 후 탭 전환 */
   const handlePrintReceipt = () => {
-    // 발행 시점에만 현재까지의 세션들을 Firebase에 일괄 저장
-    if (user && sessions.length > 0) {
-      const promises = sessions.map((s) =>
-        saveStudySession(user.uid, {
-          subject: s.subject,
-          minutes: s.duration,
-          keyInsight: s.keyInsight,
-          dailyNote: s.dailyNote,
-          flowLog: s.flowLog,
-          mode: s.mode,
-          thoughtNotes: s.thoughtNotes,
-        }).catch((error) => {
-          console.error('세션 저장 실패', error);
-        })
-      );
-      savePromisesRef.current = promises;
-    }
-    // 발행 애니메이션(영수증이 COLLECTION으로 날아가는 효과) 트리거
+    // Workshop20 handlePublish에서 이미 Firebase 저장 후 호출하므로 여기서는 애니만 트리거
     setFlyToCollection(true);
   };
 
@@ -118,10 +103,15 @@ const Workshop: React.FC<WorkshopPageProps> = ({ user }) => {
     savePromisesRef.current = [];
 
     if (promises.length === 0) {
-      setActiveTab('collection');
-      setFlyToCollection(false);
-      // 발행 완료 후에는 화면상의 세션 목록을 비워 다음 공부를 준비
+      // 즉시 상태 초기화
       setSessions([]);
+      setFlyToCollection(false);
+      setIsResetting(false);
+
+      // 다음 틱에 탭 이동 (상태 업데이트 후)
+      setTimeout(() => {
+        setActiveTab('collection');
+      }, 0);
       return;
     }
 
@@ -130,9 +120,15 @@ const Workshop: React.FC<WorkshopPageProps> = ({ user }) => {
         console.error('세션 저장 대기 중 오류', error);
       })
       .finally(() => {
-        setActiveTab('collection');
-        setFlyToCollection(false);
+        // 즉시 상태 초기화
         setSessions([]);
+        setFlyToCollection(false);
+        setIsResetting(false);
+
+        // 다음 틱에 탭 이동
+        setTimeout(() => {
+          setActiveTab('collection');
+        }, 0);
       });
   };
 

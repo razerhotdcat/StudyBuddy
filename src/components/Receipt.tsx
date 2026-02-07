@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import type { StudyItem, ThoughtNote } from '../types';
+import { ZigzagEdge } from './ZigzagEdge';
 
 interface ReceiptProps {
   items?: StudyItem[];
@@ -87,10 +88,7 @@ export const Receipt: React.FC<ReceiptProps> = ({
   const textBlack = '#000000';
   const receiptShadow = '0 25px 50px -12px rgba(0,0,0,0.22), 0 12px 24px -8px rgba(0,0,0,0.14), 0 1px 3px rgba(0,0,0,0.1)';
   const fontScale = 1.1;
-
-  /* 지그재그 하단: clip-path polygon */
-  const zigzagBottom =
-    'polygon(0 0, 100% 0, 100% 100%, 96.5% 96%, 93% 100%, 89.5% 96%, 86% 100%, 82.5% 96%, 79% 100%, 75.5% 96%, 72% 100%, 68.5% 96%, 65% 100%, 61.5% 96%, 58% 100%, 54.5% 96%, 51% 100%, 47.5% 96%, 44% 100%, 40.5% 96%, 37% 100%, 33.5% 96%, 30% 100%, 26.5% 96%, 23% 100%, 19.5% 96%, 16% 100%, 12.5% 96%, 9% 100%, 5.5% 96%, 2% 100%, 0 100%)';
+  const receiptBg = '#FFFFFF';
 
   // 세션이 누적될 때 영수증 높이/레이아웃을 부드럽게 확장
   const prevLengthRef = React.useRef(baseItems.length);
@@ -103,13 +101,11 @@ export const Receipt: React.FC<ReceiptProps> = ({
     <div className={`pb-8 overflow-visible ${className}`.trim()} aria-hidden={false}>
     <motion.div
       layout
-      className="relative font-mono w-full max-w-[95vw] md:max-w-[500px] mx-auto overflow-visible receipt-paper"
+      className="relative font-mono w-full max-w-[95vw] md:max-w-[500px] mx-auto overflow-visible receipt-paper rounded-t-lg flex flex-col"
       style={{
-        background: '#FFFFFF',
+        background: receiptBg,
         color: textBlack,
         boxShadow: receiptShadow,
-        clipPath: zigzagBottom,
-        paddingBottom: 24,
         fontSize: `${fontScale}rem`,
       }}
       initial={false}
@@ -117,7 +113,7 @@ export const Receipt: React.FC<ReceiptProps> = ({
     >
       <div className="absolute -top-2 left-0 w-full h-4 rounded-t-lg -z-10" style={{ background: '#f5f5f5' }} />
 
-      <div className="p-8 pb-20 relative z-10 leading-relaxed font-bold" style={{ background: '#FFFFFF', fontSize: '1em', color: '#000000' }}>
+      <div className="p-8 pb-20 relative z-10 leading-relaxed font-bold flex-1 min-h-0" style={{ background: receiptBg, fontSize: '1em', color: '#000000' }}>
         {isPrinting && (
           <div className="absolute top-5 right-5 text-[0.95em] font-mono tracking-[0.3em] text-brand-lime animate-pulse font-bold" style={{ color: textBlack }}>
             PRINTING...
@@ -309,17 +305,10 @@ export const Receipt: React.FC<ReceiptProps> = ({
         </>
       )}
 
-      {/* 영수증 끝 두께감: 미세한 회색 선 (지그재그 바로 위) */}
-      <div
-        className="absolute left-0 w-full"
-        style={{
-          bottom: 0,
-          height: 1,
-          background: 'linear-gradient(90deg, transparent 0%, #d4d4d4 8%, #d4d4d4 92%, transparent 100%)',
-          opacity: 0.9,
-        }}
-        aria-hidden
-      />
+      {/* 지그재그 절취선: 항상 영수증 최하단 */}
+      <div className="shrink-0">
+        <ZigzagEdge fill={receiptBg} height={14} />
+      </div>
     </motion.div>
     </div>
   );

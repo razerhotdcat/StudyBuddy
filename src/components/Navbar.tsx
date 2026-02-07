@@ -81,17 +81,23 @@ export const Navbar: React.FC<NavbarProps> = ({
               style={{ cursor: 'pointer' }}
               aria-label="대시보드 초기화"
             >
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center -rotate-6 bg-brand-lime">
-                <span className="font-mono font-bold text-lg text-black">S</span>
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center -rotate-6"
+                style={{ background: theme.mode === 'dark' ? '#CCFF00' : '#3B82F6' }}
+              >
+                <span className="font-mono font-bold text-lg" style={{ color: theme.mode === 'dark' ? '#000000' : '#FFFFFF' }}>S</span>
               </div>
-              <span className="font-bold text-xl tracking-tight text-[#ccff00] hidden sm:inline">StudyBuddy</span>
+              <span className="font-bold text-xl tracking-tight hidden sm:inline" style={{ color: theme.mode === 'dark' ? '#CCFF00' : '#1C1C1E' }}>StudyBuddy</span>
             </button>
           ) : isLoggedIn ? (
             <div className="flex items-center gap-2 shrink-0 cursor-default">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center -rotate-6 bg-brand-lime">
-                <span className="font-mono font-bold text-lg text-black">S</span>
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center -rotate-6"
+                style={{ background: theme.mode === 'dark' ? '#CCFF00' : '#3B82F6' }}
+              >
+                <span className="font-mono font-bold text-lg" style={{ color: theme.mode === 'dark' ? '#000000' : '#FFFFFF' }}>S</span>
               </div>
-              <span className="font-bold text-xl tracking-tight text-[#ccff00] hidden sm:inline">StudyBuddy</span>
+              <span className="font-bold text-xl tracking-tight hidden sm:inline" style={{ color: theme.mode === 'dark' ? '#CCFF00' : '#1C1C1E' }}>StudyBuddy</span>
             </div>
           ) : (
             <>

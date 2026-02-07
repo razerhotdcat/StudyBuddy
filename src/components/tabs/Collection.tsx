@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Archive } from 'lucide-react';
-import { fetchStudySessions, type StudySessionDoc } from '../../firebase';
+import { fetchReceipts, type ReceiptDoc } from '../../firebase';
 import { ReceiptStackCard } from '../ReceiptStackCard';
-import { ReceiptDetailModal } from '../ReceiptDetailModal';
 import { AIManagerBubble } from '../AIManagerBubble';
 import { getRandomManagerComment } from '../../lib/managerComments';
-import { ZigzagEdge } from '../ZigzagEdge';
 import { useTheme } from '../../context/ThemeContext';
 import { ReceiptFrame } from '../ReceiptFrame';
 
@@ -17,39 +15,37 @@ interface CollectionProps {
   userId: string | null;
 }
 
-const formatDuration = (minutes: number) => {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  if (h === 0) return `${m}분`;
-  if (m === 0) return `${h}시간`;
-  return `${h}시간 ${m}분`;
+const formatDate = (ts: { toDate: () => Date } | null) => {
+  if (!ts) return '—';
+  const d = ts.toDate();
+  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 };
 
 export const Collection: React.FC<CollectionProps> = ({ userId }) => {
   const theme = useTheme();
-  const [sessions, setSessions] = useState<StudySessionDoc[]>([]);
+  const [receipts, setReceipts] = useState<ReceiptDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedSession, setSelectedSession] = useState<StudySessionDoc | null>(null);
-  const [hoveredSession, setHoveredSession] = useState<StudySessionDoc | null>(null);
+  const [selectedReceipt, setSelectedReceipt] = useState<ReceiptDoc | null>(null);
+  const [hoveredReceipt, setHoveredReceipt] = useState<ReceiptDoc | null>(null);
   const [managerMessage, setManagerMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!userId) {
-      setSessions([]);
+      setReceipts([]);
       setLoading(false);
       setManagerMessage(null);
       return;
     }
     setLoading(true);
     setError(null);
-    fetchStudySessions(userId)
+    fetchReceipts(userId)
       .then((data) => {
-        setSessions(data);
+        setReceipts(data);
         if (data.length > 0) setManagerMessage(getRandomManagerComment('collection_index'));
       })
       .catch((e) => {
-        console.error('세션 목록 로드 실패', e);
+        console.error('영수증 목록 로드 실패', e);
         setError('영수증을 불러오지 못했습니다.');
       })
       .finally(() => setLoading(false));
@@ -74,7 +70,7 @@ export const Collection: React.FC<CollectionProps> = ({ userId }) => {
     );
   }
 
-  if (sessions.length === 0) {
+  if (receipts.length === 0) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center transition-colors" style={{ background: theme.bg, color: theme.text }}>
         <div className="text-center space-y-6">
@@ -86,7 +82,7 @@ export const Collection: React.FC<CollectionProps> = ({ userId }) => {
           <div>
             <h2 className="text-3xl font-bold text-white mb-3">영수증 창고</h2>
             <p className="text-gray-400 max-w-md mx-auto">
-              WORKSHOP에서 활동을 기록하고 [영수증 출력하기]를 누르면 여기에 쌓입니다.
+              WORKSHOP에서 활동을 기록하고 [영수증 발행]을 누르면 여기에 쌓입니다.
             </p>
           </div>
         </div>
@@ -94,8 +90,8 @@ export const Collection: React.FC<CollectionProps> = ({ userId }) => {
     );
   }
 
-  const stackHeight = CARD_TOP_OFFSET + sessions.length * CARD_STACK_OFFSET + 120;
-  const totalMeters = (sessions.length * 0.08).toFixed(1);
+  const stackHeight = CARD_TOP_OFFSET + receipts.length * CARD_STACK_OFFSET + 220;
+  const totalMeters = (receipts.length * 0.08).toFixed(1);
 
   return (
     <section className="py-12 relative overflow-hidden min-h-[70vh] transition-colors" style={{ background: theme.bg, color: theme.text }}>
@@ -109,20 +105,20 @@ export const Collection: React.FC<CollectionProps> = ({ userId }) => {
             성장을 증명하는 영수증 — 당신의 기록이 쌓입니다.
           </p>
           <p className="text-gray-300 text-base font-mono mb-2">
-            발행한 플로우 영수증 {sessions.length}장 · 총 <span className="text-brand-lime font-bold">{totalMeters}m</span>
+            발행한 플로우 영수증 {receipts.length}장 · 총 <span className="text-brand-lime font-bold">{totalMeters}m</span>
           </p>
         </div>
 
         <ReceiptFrame caption="AI 점주: 오늘도 한 장 한 장이 당신의 역사가 됩니다." className="max-w-2xl mx-auto mb-6">
           <div className="space-y-2 text-center">
-            <p className="font-bold">발행 영수증 {sessions.length}장</p>
-            <p className="text-gray-600 text-sm">클릭하여 상세 보기 · 삭제 시 파쇄 효과</p>
+            <p className="font-bold">발행 영수증 {receipts.length}장</p>
+            <p className="text-gray-600 text-sm">클릭하여 상세 보기</p>
           </div>
         </ReceiptFrame>
 
         <div className="relative mx-auto" style={{ width: '100%', maxWidth: '24rem' }}>
           {/* 스택 뒤 겹겹이 그림자 (종이 뭉치 깊이감) */}
-          {sessions.length > 0 && (
+          {receipts.length > 0 && (
             <div
               className="absolute left-1/2 top-0 -translate-x-1/2 rounded-lg pointer-events-none"
               style={{
@@ -150,92 +146,122 @@ export const Collection: React.FC<CollectionProps> = ({ userId }) => {
             paddingBottom: stackHeight,
           }}
         >
-          {sessions.map((session, index) => (
+          {receipts.map((receipt, index) => (
             <ReceiptStackCard
-              key={session.id}
-              session={session}
+              key={receipt.id}
+              receipt={receipt}
               index={index}
-              total={sessions.length}
-              onClick={() => setSelectedSession(session)}
-              onHoverStart={() => setHoveredSession(session)}
-              onHoverEnd={() => setHoveredSession(null)}
+              total={receipts.length}
+              onClick={() => setSelectedReceipt(receipt)}
+              onHoverStart={() => setHoveredReceipt(receipt)}
+              onHoverEnd={() => setHoveredReceipt(null)}
             />
           ))}
         </div>
         </div>
 
-        {/* 호버 미리보기: 찢어진 영수증 형태 + 입체감 + 종이 질감 */}
+        {/* 영수증 상세 모달 */}
         <AnimatePresence>
-          {hoveredSession && (
+          {selectedReceipt && (
             <>
               <motion.div
-                className="fixed inset-0 z-30 bg-black/30 backdrop-blur-sm pointer-events-none"
-                aria-hidden
+                className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm"
+                onClick={() => setSelectedReceipt(null)}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               />
               <motion.div
-                className="fixed inset-0 z-40 flex items-center justify-center p-4 pointer-events-none"
+                className="fixed inset-0 z-40 flex items-center justify-center p-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               >
                 <motion.div
-                  className="relative w-full max-w-[300px] font-mono overflow-hidden receipt-paper rounded-t-lg"
+                  className="relative w-full max-w-md font-mono rounded-xl overflow-hidden shadow-2xl"
                   style={{
-                    background: '#FFFFFF',
-                    color: '#000000',
-                    boxShadow: '0 28px 56px -12px rgba(0,0,0,0.4), 0 12px 24px -8px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.06)',
-                    transform: 'rotate(-2deg)',
+                    background: theme.mode === 'dark' ? '#1C1C1E' : '#FFFFFF',
+                    border: `1px solid ${theme.mode === 'dark' ? '#2C2C2E' : '#E5E7EB'}`,
                   }}
-                  initial={{ opacity: 0, scale: 0.9, y: 24 }}
-                  animate={{ opacity: 1, scale: 1, y: -8 }}
-                  exit={{ opacity: 0, scale: 0.9, y: 16 }}
-                  transition={{ duration: 0.25, ease: 'easeOut' }}
+                  initial={{ opacity: 0, scale: 0.95, y: 16 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 16 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")' }} />
-                  <div className="relative px-4 pt-4 pb-4">
-                    <div className="flex flex-col items-center mb-2">
-                      <div className="w-8 h-8 rounded-full flex items-center justify-center text-brand-lime font-bold text-xs" style={{ background: '#000000' }}>SB</div>
-                      <p className="text-[8px] font-bold uppercase tracking-widest mt-1" style={{ color: '#000000' }}>Flow Receipt</p>
-                      <p className="text-[8px] font-mono mt-0.5" style={{ color: '#000000' }}>{hoveredSession.createdAt ? new Date(hoveredSession.createdAt.toDate()).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric', year: '2-digit' }) : '—'}</p>
-                    </div>
-                    <div className="border-t border-dashed border-gray-300 pt-3 mb-3">
-                      <p className="text-base font-bold leading-tight line-clamp-1 mb-1" style={{ color: '#000000' }}>
-                        {hoveredSession.mode === 'target' && <span className="text-brand-lime mr-1">◉</span>}
-                        {hoveredSession.subject}
-                      </p>
-                      <p className="text-sm font-bold" style={{ color: '#000000' }}>{formatDuration(hoveredSession.minutes)}</p>
-                    </div>
-                    <p className="text-[10px] text-center italic leading-snug line-clamp-2" style={{ color: '#000000' }}>
-                      {hoveredSession.keyInsight || '오늘도 수고했어요.'}
-                    </p>
-                    <p className="text-[8px] text-center uppercase mt-2 tracking-widest" style={{ color: '#000000' }}>Thank you</p>
+                  <div className="px-6 py-4 border-b flex items-center justify-between" style={{ borderColor: theme.mode === 'dark' ? '#2C2C2E' : '#E5E7EB' }}>
+                    <span className="text-sm uppercase tracking-wider" style={{ color: theme.mode === 'dark' ? '#FFFFFF' : '#1C1C1E' }}>
+                      {formatDate(selectedReceipt.createdAt)}
+                    </span>
+                    <span className="text-xs uppercase" style={{ color: theme.mode === 'dark' ? '#999999' : '#6B7280' }}>
+                      #{selectedReceipt.id.slice(-6).toUpperCase()}
+                    </span>
                   </div>
-                  <ZigzagEdge fill="#f9fafb" height={10} />
-                  <div className="px-4 py-1.5 rounded-b" style={{ background: '#f9fafb' }}>
-                    <p className="text-[7px] font-mono tracking-widest text-center" style={{ color: '#000000' }}>STORE ID: 0012-9938</p>
+                  <div className="px-6 py-4 flex items-center justify-between border-b" style={{ borderColor: theme.mode === 'dark' ? '#2C2C2E' : '#E5E7EB' }}>
+                    <span className="text-sm" style={{ color: theme.mode === 'dark' ? '#999999' : '#6B7280' }}>
+                      {selectedReceipt.sessions.length}개 세션
+                    </span>
+                    <span className="font-bold" style={{ color: theme.mode === 'dark' ? '#CCFF00' : '#3B82F6' }}>
+                      {selectedReceipt.totalFormatted}
+                    </span>
+                  </div>
+                  <div className="px-6 py-4 max-h-64 overflow-y-auto space-y-3">
+                    {selectedReceipt.sessions.map((s, i) => (
+                      <div key={i} className="border-b pb-3" style={{ borderColor: theme.mode === 'dark' ? '#2C2C2E' : '#E5E7EB' }}>
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="mr-1">{s.categoryEmoji ?? '🎯'}</span>
+                          <span className="font-medium flex-1 truncate" style={{ color: theme.mode === 'dark' ? '#FFFFFF' : '#1C1C1E' }}>{s.subject}</span>
+                          <span className="text-sm font-mono shrink-0" style={{ color: theme.mode === 'dark' ? '#CCFF00' : '#10B981' }}>
+                            {s.elapsedFormatted ?? `${s.duration}분`}
+                          </span>
+                        </div>
+                        {s.keyInsight && (
+                          <p className="text-xs mt-1 pl-5" style={{ color: theme.mode === 'dark' ? '#999999' : '#6B7280' }}>{s.keyInsight}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {selectedReceipt.categoryStats.length > 0 && (
+                    <div className="px-6 py-4 border-t" style={{ borderColor: theme.mode === 'dark' ? '#2C2C2E' : '#E5E7EB' }}>
+                      <p className="text-xs uppercase tracking-wider mb-2" style={{ color: theme.mode === 'dark' ? '#999999' : '#6B7280' }}>카테고리별 통계</p>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedReceipt.categoryStats.map((stat, i) => (
+                          <span
+                            key={i}
+                            className="text-xs px-2 py-1 rounded"
+                            style={{
+                              background: theme.mode === 'dark' ? '#2C2C2E' : '#F3F4F6',
+                              color: theme.mode === 'dark' ? '#FFFFFF' : '#1C1C1E',
+                            }}
+                          >
+                            {stat.categoryEmoji ?? '🎯'} {stat.categoryName ?? stat.categoryId} · {stat.formatted}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="px-6 py-4 border-t flex justify-end" style={{ borderColor: theme.mode === 'dark' ? '#2C2C2E' : '#E5E7EB' }}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedReceipt(null)}
+                      className="px-4 py-2 rounded-lg font-mono text-sm font-bold uppercase"
+                      style={{
+                        background: theme.mode === 'dark' ? '#CCFF00' : '#3B82F6',
+                        color: theme.mode === 'dark' ? '#000000' : '#FFFFFF',
+                      }}
+                    >
+                      닫기
+                    </button>
                   </div>
                 </motion.div>
               </motion.div>
             </>
           )}
         </AnimatePresence>
+
       </div>
-
-      <ReceiptDetailModal
-        session={selectedSession}
-        userId={userId}
-        onClose={() => setSelectedSession(null)}
-        onDeleted={(deletedId) => {
-          setSessions((prev) => prev.filter((s) => s.id !== deletedId));
-          setSelectedSession(null);
-        }}
-      />
-
       <AIManagerBubble message={managerMessage} position="bottom-right" />
     </section>
   );

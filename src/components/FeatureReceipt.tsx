@@ -138,7 +138,7 @@ export const FeatureReceipt: React.FC<FeatureReceiptProps> = ({
 
   /** ADD SESSION: 현재 세션을 영수증에 중간 인쇄, 다음 작업 준비, 지익- 사운드 + 한 칸 밀려나옴 */
   const handleAddSession = () => {
-    // 현재 세션의 데이터(과목/시간/메모)를 세션 배열로 중간 인쇄
+  // 현재 세션의 데이터(목표/시간/메모)를 세션 배열로 중간 인쇄
     const activeSubject = (peekAfterStop?.subject || timerSubject || subjectInput.trim()) || '세션';
     const computedMinutes = isTimerRunning
       ? Math.max(1, Math.round(timerSeconds / 60))
@@ -325,7 +325,7 @@ export const FeatureReceipt: React.FC<FeatureReceiptProps> = ({
             type="text"
             value={subjectInput}
             onChange={(e) => setSubjectInput(e.target.value)}
-            placeholder="과목 / 활동명"
+            placeholder="목표 / 활동명"
             disabled={isTimerRunning}
             className="w-full rounded border-2 border-brand-lime bg-black/60 px-3 py-2.5 font-mono text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-lime disabled:opacity-70 mb-4"
           />
@@ -413,7 +413,7 @@ export const FeatureReceipt: React.FC<FeatureReceiptProps> = ({
                     <div className="h-full bg-gradient-to-r from-transparent via-gray-600 to-transparent" />
                   </div>
                 </div>
-                {/* 배출구: Peeking 시 [과목][메모][시간] 실시간. STOP 후에는 그대로 고정 + 약 10cm(140px) 더 삐져나온 대기 */}
+                {/* 배출구: Peeking 시 [목표][메모][시간] 실시간. STOP 후에는 그대로 고정 + 약 10cm(140px) 더 삐져나온 대기 */}
                 <div
                   className="relative mx-3 rounded-b overflow-hidden bg-gray-950 border-x-2 border-b-2 border-gray-700"
                   style={{ height: peekAfterStop ? 140 : 100, minHeight: 100 }}

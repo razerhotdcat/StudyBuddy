@@ -114,6 +114,11 @@ export interface StudySessionPayload {
   mode?: 'flow' | 'target';
   thoughtNotes?: ThoughtNote[];
   createdAt?: Date;
+  category?: string;
+  categoryEmoji?: string;
+  categoryName?: string;
+  categoryColor?: string;
+  elapsedFormatted?: string;
 }
 
 /**
@@ -128,7 +133,7 @@ export async function saveStudySession(
     throw new Error('유저 UID가 필요합니다.');
   }
 
-  const { subject, minutes, keyInsight, dailyNote, flowLog, mode, thoughtNotes, createdAt } = payload;
+  const { subject, minutes, keyInsight, dailyNote, flowLog, mode, thoughtNotes, createdAt, category, categoryEmoji, categoryName, categoryColor, elapsedFormatted } = payload;
 
   if (!subject.trim()) {
     throw new Error('활동명을 입력해주세요.');
@@ -152,6 +157,11 @@ export async function saveStudySession(
   if (flowLog?.trim()) sessionData.flowLog = flowLog.trim();
   if (mode) sessionData.mode = mode;
   if (thoughtNotes && thoughtNotes.length > 0) sessionData.thoughtNotes = thoughtNotes;
+  if (category) sessionData.category = category;
+  if (categoryEmoji) sessionData.categoryEmoji = categoryEmoji;
+  if (categoryName) sessionData.categoryName = categoryName;
+  if (categoryColor) sessionData.categoryColor = categoryColor;
+  if (elapsedFormatted) sessionData.elapsedFormatted = elapsedFormatted;
 
   await addDoc(sessionsCol, sessionData);
 }
@@ -166,6 +176,42 @@ export interface StudySessionDoc {
   flowLog?: string;
   mode?: 'flow' | 'target';
   thoughtNotes?: ThoughtNote[];
+  createdAt: Timestamp | null;
+  category?: string;
+  categoryEmoji?: string;
+  categoryName?: string;
+  categoryColor?: string;
+  elapsedFormatted?: string;
+}
+
+/** 영수증 한 장에 담긴 세션 항목 (receipts 컬렉션 내 sessions 배열) */
+export interface ReceiptSessionItem {
+  subject: string;
+  duration: number;
+  keyInsight?: string;
+  category?: string;
+  categoryEmoji?: string;
+  categoryName?: string;
+  categoryColor?: string;
+  elapsedFormatted?: string;
+}
+
+/** 카테고리별 통계 */
+export interface CategoryStatItem {
+  categoryId: string;
+  categoryName?: string;
+  categoryEmoji?: string;
+  count: number;
+  totalMinutes: number;
+  formatted: string;
+}
+
+/** 영수증 문서 (users/{uid}/receipts) */
+export interface ReceiptDoc {
+  id: string;
+  sessions: ReceiptSessionItem[];
+  totalFormatted: string;
+  categoryStats: CategoryStatItem[];
   createdAt: Timestamp | null;
 }
 
@@ -189,7 +235,52 @@ export async function fetchStudySessions(uid: string): Promise<StudySessionDoc[]
       mode: data.mode,
       thoughtNotes: data.thoughtNotes,
       createdAt: data.createdAt ?? null,
+      category: data.category,
+      categoryEmoji: data.categoryEmoji,
+      categoryName: data.categoryName,
+      categoryColor: data.categoryColor,
+      elapsedFormatted: data.elapsedFormatted,
     } as StudySessionDoc;
+  });
+}
+
+/**
+ * 영수증 한 장 저장 (users/{uid}/receipts)
+ * sessions: elapsedFormatted 포함한 세션 배열, totalFormatted, categoryStats
+ */
+export async function saveReceipt(
+  uid: string,
+  payload: {
+    sessions: ReceiptSessionItem[];
+    totalFormatted: string;
+    categoryStats: CategoryStatItem[];
+  },
+) {
+  if (!uid) throw new Error('유저 UID가 필요합니다.');
+  const receiptsCol = collection(db, 'users', uid, 'receipts');
+  await addDoc(receiptsCol, {
+    ...payload,
+    createdAt: serverTimestamp(),
+  });
+}
+
+/**
+ * 사용자 영수증 목록 조회 (날짜 역순)
+ */
+export async function fetchReceipts(uid: string): Promise<ReceiptDoc[]> {
+  if (!uid) return [];
+  const receiptsCol = collection(db, 'users', uid, 'receipts');
+  const q = query(receiptsCol, orderBy('createdAt', 'desc'));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => {
+    const data = d.data();
+    return {
+      id: d.id,
+      sessions: data.sessions ?? [],
+      totalFormatted: data.totalFormatted ?? '',
+      categoryStats: data.categoryStats ?? [],
+      createdAt: data.createdAt ?? null,
+    } as ReceiptDoc;
   });
 }
 

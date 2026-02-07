@@ -55,10 +55,22 @@ export const MyOffice: React.FC<MyOfficeProps> = ({
       <div className="container mx-auto px-4 relative z-10 max-w-2xl">
         {/* 관리자 전용: MY OFFICE 탭 안에서만 표시 */}
         {isAdmin && (
-          <div className="rounded-2xl border-2 border-[#CCFF00] bg-[#1a1a1a] p-6 mb-6">
+          <div
+            className="rounded-2xl border-2 p-6 mb-6"
+            style={{
+              background: theme.mode === 'dark' ? 'linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%)' : '#FFFFFF',
+              borderColor: '#CCFF00',
+              boxShadow: '0 4px 12px rgba(204, 255, 0, 0.1)',
+            }}
+          >
             <div className="flex items-center gap-2 mb-4">
               <Shield size={24} className="text-[#CCFF00]" />
-              <h3 className="text-lg font-bold text-[#CCFF00]">관리자 전용</h3>
+              <h3
+                className="text-lg font-bold"
+                style={{ color: theme.mode === 'dark' ? '#CCFF00' : '#000000' }}
+              >
+                관리자 전용
+              </h3>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="rounded-xl border border-gray-700 p-4">

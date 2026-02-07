@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { fetchTodaySessions, type StudySessionDoc } from '../../firebase';
 import { AIManagerBubble } from '../AIManagerBubble';
 import { useTheme } from '../../context/ThemeContext';
-import { ZigzagEdge } from '../ZigzagEdge';
 
 interface DailyReportProps {
   userId: string | null;
@@ -61,8 +60,20 @@ export const DailyReport: React.FC<DailyReportProps> = ({ userId }) => {
       />
       <div className="container mx-auto px-4 relative z-10">
         <div className="flex flex-col items-center text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-2 tracking-tight">
-            오늘의 <span className="text-brand-lime">정산</span>
+          <h2
+            className="text-3xl md:text-4xl font-extrabold mb-2 tracking-tight"
+            style={{
+              color: theme.mode === 'dark' ? '#FFFFFF' : '#1C1C1E',
+            }}
+          >
+            오늘의{' '}
+            <span
+              style={{
+                color: theme.mode === 'dark' ? '#CCFF00' : '#3B82F6',
+              }}
+            >
+              정산
+            </span>
           </h2>
           <p className="text-base font-mono opacity-90">성장을 증명하는 영수증 · AI 점주가 오늘을 정리합니다.</p>
           <p className="text-gray-400 text-base font-mono mt-1">{todayStr}</p>
@@ -70,74 +81,142 @@ export const DailyReport: React.FC<DailyReportProps> = ({ userId }) => {
 
         {/* 상단 벤토 그리드: 총시간, 인사이트, AI 코멘트 */}
         <div className="grid gap-6 md:grid-cols-3 mb-10">
-          <div className="rounded-2xl border-2 border-brand-lime bg-[#141414] p-5 flex flex-col items-center justify-center text-center">
-            <p className="text-[11px] font-bold text-brand-lime uppercase tracking-[0.16em] mb-2">
+          <div
+            className="rounded-xl border p-6 flex flex-col items-center"
+            style={{
+              background: theme.mode === 'dark' ? '#1C1C1E' : '#FFFFFF',
+              borderColor: theme.mode === 'dark' ? '#CCFF00' : '#E5E7EB',
+              boxShadow: theme.mode === 'light' ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
+            }}
+          >
+            <div
+              className="text-xs font-mono font-bold uppercase mb-2"
+              style={{ color: theme.mode === 'dark' ? '#FFFFFF' : '#6B7280' }}
+            >
               총 집중 시간
-            </p>
-            <p className="text-3xl font-extrabold text-black bg-brand-lime/90 px-4 py-2 rounded-xl">
+            </div>
+            <div
+              className="text-4xl font-mono font-bold"
+              style={{ color: theme.mode === 'dark' ? '#CCFF00' : '#3B82F6' }}
+            >
               {formatDuration(totalMinutes)}
-            </p>
+            </div>
           </div>
-          <div className="rounded-2xl border-2 border-brand-lime bg-[#141414] p-5 flex flex-col items-center justify-center text-center">
-            <p className="text-[11px] font-bold text-brand-lime uppercase tracking-[0.16em] mb-2">
+          <div
+            className="rounded-xl border p-6 flex flex-col items-center"
+            style={{
+              background: theme.mode === 'dark' ? '#1C1C1E' : '#FFFFFF',
+              borderColor: theme.mode === 'dark' ? '#CCFF00' : '#E5E7EB',
+              boxShadow: theme.mode === 'light' ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
+            }}
+          >
+            <div
+              className="text-xs font-mono font-bold uppercase mb-2"
+              style={{ color: theme.mode === 'dark' ? '#FFFFFF' : '#6B7280' }}
+            >
               인사이트
-            </p>
-            <p className="text-3xl font-extrabold text-black bg-brand-lime/90 px-4 py-2 rounded-xl">
+            </div>
+            <div
+              className="text-4xl font-mono font-bold"
+              style={{ color: theme.mode === 'dark' ? '#CCFF00' : '#3B82F6' }}
+            >
               {insightCount}개
-            </p>
+            </div>
           </div>
-          <div className="rounded-2xl border-2 border-brand-lime/80 bg-[#111111] p-5 flex flex-col justify-between">
+          <div
+            className="rounded-xl border p-6 flex flex-col"
+            style={{
+              background: theme.mode === 'dark' ? '#1C1C1E' : '#FFFFFF',
+              borderColor: theme.mode === 'dark' ? '#CCFF00' : '#E5E7EB',
+              boxShadow: theme.mode === 'light' ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
+            }}
+          >
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-7 h-7 rounded-full bg-brand-lime flex items-center justify-center text-black font-mono text-xs font-bold">
-                SB
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+                style={{
+                  background: theme.mode === 'dark' ? '#CCFF00' : '#3B82F6',
+                  color: '#FFFFFF',
+                }}
+              >
+                AI
               </div>
-              <span className="text-xs font-mono uppercase tracking-[0.18em] text-brand-lime">
-                AI 점주 코멘트
+              <span
+                className="font-mono text-xs font-bold"
+                style={{ color: theme.mode === 'dark' ? '#FFFFFF' : '#1C1C1E' }}
+              >
+                점주 코멘트
               </span>
             </div>
-            <p className="text-base leading-relaxed text-gray-100">
+            <p
+              className="font-mono text-sm"
+              style={{ color: theme.mode === 'dark' ? '#FFFFFF' : '#6B7280' }}
+            >
               {aiSummaryText}
             </p>
           </div>
         </div>
 
-        {/* 하단 롱 롤 영수증: 종이 질감 오프화이트 + 지그재그 절취선 */}
+        {/* 하단 롱 롤 영수증: 하단·지그재그 배경색 통일 */}
         <div
-          className="max-w-md mx-auto rounded-2xl border border-gray-200 overflow-hidden flex flex-col shadow-xl"
+          className="max-w-md mx-auto rounded-2xl border overflow-hidden flex flex-col shadow-xl"
           style={{
-            background: '#FCFCFC',
-            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25), 0 12px 24px -8px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.04)',
+            background: theme.mode === 'dark' ? '#000000' : '#FFFFFF',
+            borderColor: theme.mode === 'dark' ? '#2C2C2E' : '#E5E7EB',
+            boxShadow: theme.mode === 'light' ? '0 4px 12px rgba(0,0,0,0.08)' : '0 25px 50px -12px rgba(0,0,0,0.25)',
           }}
         >
-          <div className="p-5 font-mono text-brand-black flex-1 min-h-0">
-            <div className="flex flex-col items-center border-b-2 border-dashed border-gray-300 pb-3 mb-4">
-              <div className="w-10 h-10 bg-brand-black rounded-full flex items-center justify-center text-brand-lime font-bold text-sm">
+          <div
+            className="p-5 font-mono flex-1 min-h-0"
+            style={{
+              background: theme.mode === 'dark' ? '#000000' : '#FFFFFF',
+              color: theme.mode === 'dark' ? '#FFFFFF' : '#1C1C1E',
+            }}
+          >
+            <div
+              className="flex flex-col items-center border-b-2 border-dashed pb-3 mb-4"
+              style={{ borderColor: theme.mode === 'dark' ? '#2C2C2E' : '#E5E7EB' }}
+            >
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm"
+                style={{
+                  background: theme.mode === 'dark' ? '#000000' : '#1C1C1E',
+                  color: theme.mode === 'dark' ? '#CCFF00' : '#FFFFFF',
+                  border: `2px solid ${theme.mode === 'dark' ? '#CCFF00' : '#3B82F6'}`,
+                }}
+              >
                 SB
               </div>
-              <p className="text-[11px] text-gray-800 font-bold uppercase tracking-widest mt-2">
+              <p className="text-[11px] font-bold uppercase tracking-widest mt-2" style={{ color: theme.mode === 'dark' ? '#FFFFFF' : '#1C1C1E' }}>
                 Long Roll · Daily Receipt
               </p>
-              <p className="text-sm text-gray-800 font-medium">{todayStr}</p>
+              <p className="text-sm font-medium" style={{ color: theme.mode === 'dark' ? '#9CA3AF' : '#6B7280' }}>{todayStr}</p>
             </div>
             {sessions.length === 0 ? (
-              <p className="text-base text-gray-800 font-medium text-center py-10">
+              <p className="text-base font-medium text-center py-10" style={{ color: theme.mode === 'dark' ? '#9CA3AF' : '#6B7280' }}>
                 오늘 발행된 영수증이 없습니다.
               </p>
             ) : (
               <div className="space-y-3 max-h-[50vh] overflow-y-auto">
                 {sessions.map((s) => (
-                  <div key={s.id} className="border-b border-dashed border-gray-200 pb-3 last:border-0">
+                  <div key={s.id} className="border-b border-dashed pb-3 last:border-0" style={{ borderColor: theme.mode === 'dark' ? '#2C2C2E' : '#E5E7EB' }}>
                     <div className="flex justify-between items-start gap-3">
-                      <span className="font-bold text-black text-base flex-1 break-words">
+                      <span className="font-bold text-base flex-1 break-words" style={{ color: theme.mode === 'dark' ? '#FFFFFF' : '#1C1C1E' }}>
                         {s.mode === 'target' && <span className="text-brand-lime mr-1">◉</span>}
                         {s.subject}
                       </span>
-                      <span className="text-xs font-bold text-black bg-brand-lime/80 px-2 py-0.5 rounded shrink-0">
+                      <span
+                        className="text-xs font-bold px-2 py-0.5 rounded shrink-0"
+                        style={{
+                          color: theme.mode === 'dark' ? '#000000' : '#1C1C1E',
+                          background: theme.mode === 'dark' ? '#CCFF00' : '#E5E7EB',
+                        }}
+                      >
                         {formatDuration(s.minutes)}
                       </span>
                     </div>
                     {s.keyInsight && (
-                      <p className="text-[13px] text-black font-bold mt-1 pl-2 border-l-2 border-brand-lime/50">
+                      <p className="text-[13px] font-bold mt-1 pl-2 border-l-2" style={{ color: theme.mode === 'dark' ? '#D1D5DB' : '#1C1C1E', borderColor: theme.mode === 'dark' ? '#CCFF00' : '#3B82F6' }}>
                         {s.keyInsight}
                       </p>
                     )}
@@ -145,15 +224,15 @@ export const DailyReport: React.FC<DailyReportProps> = ({ userId }) => {
                 ))}
               </div>
             )}
-            <div className="border-t-2 border-dashed border-gray-300 mt-4 pt-3 flex justify-between items-center">
-              <span className="text-base font-bold text-gray-800 uppercase">Total</span>
-              <span className="text-lg font-extrabold text-black">
+            <div
+              className="border-t-2 border-dashed mt-4 pt-3 flex justify-between items-center"
+              style={{ borderColor: theme.mode === 'dark' ? '#2C2C2E' : '#E5E7EB' }}
+            >
+              <span className="text-base font-bold uppercase" style={{ color: theme.mode === 'dark' ? '#FFFFFF' : '#1C1C1E' }}>Total</span>
+              <span className="text-lg font-extrabold" style={{ color: theme.mode === 'dark' ? '#CCFF00' : '#3B82F6' }}>
                 {formatDuration(totalMinutes)}
               </span>
             </div>
-          </div>
-          <div className="shrink-0">
-            <ZigzagEdge fill="#FCFCFC" height={14} />
           </div>
         </div>
       </div>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Flame } from 'lucide-react';
-import { ZigzagEdge } from './ZigzagEdge';
 import type { SquareFeedItem } from '../firebase';
 
 const formatDuration = (minutes: number) => {
@@ -37,8 +36,13 @@ export const SquareReceiptCard: React.FC<SquareReceiptCardProps> = ({ item, onRe
 
   return (
     <motion.div
-      className="relative w-full max-w-sm mx-auto rounded-t-lg overflow-visible receipt-paper"
-      style={{ background: '#FFFFFF', color: '#000000', boxShadow: '0 8px 24px -4px rgba(0,0,0,0.25)' }}
+      className="relative w-full max-w-sm mx-auto rounded-t-lg overflow-visible receipt-paper receipt-zigzag-bottom"
+      style={{
+        background: '#FFFFFF',
+        color: '#000000',
+        boxShadow: '0 8px 24px -4px rgba(0,0,0,0.25)',
+        ['--receipt-zigzag-fill' as string]: '#E5E7EB',
+      }}
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: 'easeOut' }}
@@ -77,10 +81,6 @@ export const SquareReceiptCard: React.FC<SquareReceiptCardProps> = ({ item, onRe
           <span aria-hidden>🫡</span>
           RESPECT
         </button>
-      </div>
-
-      <div className="mt-auto">
-        <ZigzagEdge fill="#FCFCFC" height={12} />
       </div>
 
       <AnimatePresence>

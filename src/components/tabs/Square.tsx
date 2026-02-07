@@ -55,16 +55,33 @@ export const Square: React.FC = () => {
 
   return (
     <section className="relative py-0 min-h-[70vh] flex flex-col transition-colors" style={{ background: theme.bg, color: theme.text }}>
-      <div className="sticky top-0 z-10 border-b-2 border-brand-lime overflow-hidden shrink-0" style={{ background: theme.bg }}>
+      <div
+        className="sticky top-0 z-10 border-b overflow-hidden shrink-0"
+        style={{
+          background: theme.mode === 'dark' ? '#0A0A0A' : '#EFF6FF',
+          borderColor: theme.mode === 'dark' ? '#CCFF00' : '#3B82F6',
+        }}
+      >
         <div className="py-3 flex items-center">
-          <div className="flex shrink-0 items-center gap-2 px-4 border-r-2 border-brand-lime">
-            <span className="text-brand-lime font-mono text-xs font-bold animate-pulse">LIVE</span>
-            <Grid size={18} className="text-brand-lime" />
+          <div
+            className="flex shrink-0 items-center gap-2 px-4 border-r-2"
+            style={{ borderColor: theme.mode === 'dark' ? '#CCFF00' : '#3B82F6' }}
+          >
+            <span
+              className="font-mono text-xs font-bold animate-pulse"
+              style={{ color: theme.mode === 'dark' ? '#CCFF00' : '#2563EB' }}
+            >
+              LIVE
+            </span>
+            <Grid size={18} style={{ color: theme.mode === 'dark' ? '#CCFF00' : '#2563EB' }} />
           </div>
           <div className="flex-1 min-w-0 overflow-hidden">
             <div
-              className="inline-flex whitespace-nowrap text-brand-lime font-mono text-sm font-bold tracking-widest"
-              style={{ animation: 'ticker 30s linear infinite' }}
+              className="inline-flex whitespace-nowrap font-mono text-sm font-bold tracking-widest"
+              style={{
+                animation: 'ticker 30s linear infinite',
+                color: theme.mode === 'dark' ? '#CCFF00' : '#2563EB',
+              }}
             >
               <span className="px-8">RECEIPTS • SQUARE • </span>
               <span className="px-8">방금 누군가 영수증을 인쇄했습니다 • </span>

@@ -124,3 +124,34 @@ html, body {
 .receipt-peek-vibrate {
   animation: receipt-peek-vibrate 0.12s ease-in-out infinite;
 }
+
+/* 지그재그 하단 절취선 - 모든 영수증 공통 (테마 색상은 --receipt-zigzag-fill로 지정) */
+.receipt-zigzag-bottom {
+  position: relative;
+  padding-bottom: 1rem;
+}
+.receipt-zigzag-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: linear-gradient(
+    135deg,
+    transparent 33.33%,
+    var(--receipt-zigzag-fill, #E5E7EB) 33.33%,
+    var(--receipt-zigzag-fill, #E5E7EB) 66.66%,
+    transparent 66.66%
+  ),
+  linear-gradient(
+    -135deg,
+    transparent 33.33%,
+    var(--receipt-zigzag-fill, #E5E7EB) 33.33%,
+    var(--receipt-zigzag-fill, #E5E7EB) 66.66%,
+    transparent 66.66%
+  );
+  background-size: 8px 12px;
+  background-repeat: repeat-x;
+  background-position: 0 0, 4px 0;
+}

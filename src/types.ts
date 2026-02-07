@@ -18,7 +18,7 @@ export interface ThoughtNote {
 
 // 활동/세션 기록 타입 (범용적으로 확장)
 export interface StudyItem {
-  // 활동명 (구 과목명)
+  // 활동명 (구 과목명 → 목표명)
   subject: string;
   // 시간 (분 단위)
   duration: number;
@@ -32,4 +32,9 @@ export interface StudyItem {
   mode?: 'flow' | 'target';
   // 타임스탬프 기반 생각 노트 리스트
   thoughtNotes?: ThoughtNote[];
+  // 목표 카테고리 (Workshop20)
+  category?: string;
+  categoryEmoji?: string;
+  categoryName?: string;
+  categoryColor?: string;
 }
